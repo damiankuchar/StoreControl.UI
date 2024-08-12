@@ -1,4 +1,4 @@
-import { useStore } from "@/stores/root-store";
+import { rootStore } from "@/stores/root-store";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface UnauthRouteProps {
@@ -7,9 +7,9 @@ interface UnauthRouteProps {
 
 const UnauthRoute = ({ navigateTo }: UnauthRouteProps) => {
   const location = useLocation();
-  const { authStore } = useStore();
+  const { authStore } = rootStore;
 
-  return !authStore.isAuth ? <Outlet /> : <Navigate to={navigateTo} state={{ from: location }} replace />;
+  return authStore.isAuth ? <Navigate to={navigateTo} state={{ from: location }} replace /> : <Outlet />;
 };
 
 export default UnauthRoute;

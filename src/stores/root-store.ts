@@ -1,4 +1,3 @@
-import { createContext, useContext } from "react";
 import { AuthStore } from "./auth-store";
 
 export class RootStore {
@@ -6,9 +5,9 @@ export class RootStore {
 
   constructor() {
     this.authStore = new AuthStore();
+
+    this.authStore.tryAutoLogin();
   }
 }
 
-const rootStoreContext = createContext(new RootStore());
-
-export const useStore = () => useContext(rootStoreContext);
+export const rootStore = new RootStore();

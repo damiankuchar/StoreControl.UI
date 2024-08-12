@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import { jwtDecode } from "jwt-decode";
-import { TokenData } from "@/models/auth-models";
+import { LoginRequest, TokenData } from "@/models/auth-models";
+import { LoginFormData } from "@/components/login/login-form";
+import { login } from "@/services/auth-service";
 
 export class AuthStore {
   token: string | null = null;
@@ -14,17 +16,26 @@ export class AuthStore {
     return !!this.token;
   }
 
-  async login() {
-    const response =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NWZhZGUwYS00MzQyLTQ4ZTUtYWI2Yi04ZjhiYzIwNDJjZjgiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImZ1bGxfbmFtZSI6IkFkbWluIEFkbWluIiwicGVybWlzc2lvbnMiOlsiMjE0ZXJmd2VyZmQiLCJzZGZkc2ZzZGZkc2RzZnNkZmYzMjQ1NDY3OGl1amhmZ2QiXSwiZXhwIjoxNzIyODA5Njc0LCJpc3MiOiJJc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.4DE6cW_DJOnNAHc4HTuhKJDmwEfbcdhVeTc2FMXtNww";
-
-    this.handleJwtToken(response);
+  async login(loginFormData: LoginFormData) {
+    const loginRequest = this.mapLoginFormDataToLoginRequest(loginFormData);
+    const loginResponse = await login(loginRequest);
+    this.handleJwtToken(loginResponse.token);
   }
 
   logout() {
-    this.token = null;
-    this.userData = null;
+    this.clearStore();
     window.localStorage.removeItem("jwt");
+  }
+
+  tryAutoLogin() {
+    this.clearStore();
+    const token = localStorage.getItem("jwt");
+
+    if (!token) {
+      return;
+    }
+
+    this.handleJwtToken(token);
   }
 
   hasPermission(permission: string) {
@@ -55,5 +66,17 @@ export class AuthStore {
     }
 
     window.localStorage.setItem("jwt", this.token);
+  }
+
+  clearStore() {
+    this.token = null;
+    this.userData = null;
+  }
+
+  mapLoginFormDataToLoginRequest(loginFormData: LoginFormData) {
+    return {
+      login: loginFormData.login,
+      password: loginFormData.password,
+    } as LoginRequest;
   }
 }

@@ -7,16 +7,16 @@ import LoginPage from "@/pages/login-page";
 const Router = () => {
   return (
     <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<div>Home</div>} />
-
       {/* Unauthenticated route with automatic redirect after log in */}
       <Route element={<UnauthRoute navigateTo="/" />}>
         <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<div>Register</div>} />
       </Route>
 
       {/* Protected routes with permission */}
+      <Route element={<ProtectedRoute permission="protected" />}>
+        <Route path="/" element={<div>Home</div>} />
+      </Route>
+
       <Route element={<ProtectedRoute permission="protected" />}>
         <Route path="protected" element={<div>Protected</div>} />
       </Route>

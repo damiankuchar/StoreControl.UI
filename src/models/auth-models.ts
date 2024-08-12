@@ -7,3 +7,13 @@ export interface TokenData {
   exp: number;
   iat: number;
 }
+
+export interface LoginRequest {
+  login: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  refreshToken: string;
+}
