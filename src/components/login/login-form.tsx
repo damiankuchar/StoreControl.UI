@@ -34,7 +34,7 @@ const LoginForm = observer(() => {
 
   const onSubmit = async (loginFormData: LoginFormData) => {
     await authStore.login(loginFormData);
-    navigate('');
+    navigate("");
   };
 
   return (
@@ -66,7 +66,10 @@ const LoginForm = observer(() => {
                 <FormItem>
                   <div className="flex items-center">
                     <FormLabel>Password</FormLabel>
-                    <Link to="/forgot-password" className="ml-auto inline-block text-sm underline">
+                    <Link
+                      to="/forgot-password"
+                      className="ml-auto inline-block text-sm hover:underline underline-offset-2"
+                    >
                       Forgot your password?
                     </Link>
                   </div>
@@ -77,7 +80,7 @@ const LoginForm = observer(() => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" loading={authStore.loading}>
               Login
             </Button>
           </form>

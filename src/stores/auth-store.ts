@@ -7,6 +7,7 @@ import { login } from "@/services/auth-service";
 export class AuthStore {
   token: string | null = null;
   userData: TokenData | null = null;
+  loading: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -17,9 +18,17 @@ export class AuthStore {
   }
 
   async login(loginFormData: LoginFormData) {
-    const loginRequest = this.mapLoginFormDataToLoginRequest(loginFormData);
-    const loginResponse = await login(loginRequest);
-    this.handleJwtToken(loginResponse.token);
+    try {
+      this.loading = true;
+
+      const loginRequest = this.mapLoginFormDataToLoginRequest(loginFormData);
+      const loginResponse = await login(loginRequest);
+      this.handleJwtToken(loginResponse.token);
+
+      this.loading = false;
+    } catch {
+      this.loading = false;
+    }
   }
 
   logout() {

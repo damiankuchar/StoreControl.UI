@@ -23,7 +23,7 @@ api.interceptors.request.use(
     return req;
   },
   (error: AxiosError) => {
-    Promise.reject(error);
+    return Promise.reject(error);
   },
 );
 
