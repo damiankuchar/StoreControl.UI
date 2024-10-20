@@ -1,10 +1,14 @@
 import NotFoundPage from "@/pages/not-found-page";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import UnauthRoute from "./unauth-route";
 import ProtectedRoute from "./protected-route";
 import LoginPage from "@/pages/login-page";
+import globalRouter from "./global-router";
 
 const Router = () => {
+  const navigate = useNavigate();
+  globalRouter.navigate = navigate;
+
   return (
     <Routes>
       {/* Unauthenticated route with automatic redirect after log in */}
@@ -13,7 +17,7 @@ const Router = () => {
       </Route>
 
       {/* Protected routes with permission */}
-      <Route element={<ProtectedRoute permission="protected" />}>
+      <Route element={<ProtectedRoute />}>
         <Route path="/" element={<div>Home</div>} />
       </Route>
 

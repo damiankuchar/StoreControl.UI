@@ -1,13 +1,18 @@
 import { makeAutoObservable } from "mobx";
 import { jwtDecode } from "jwt-decode";
-import { LoginRequest, TokenData } from "@/models/auth-models";
+import { LoginRequest, RefreshRequest, TokenData } from "@/models/auth-models";
 import { LoginFormData } from "@/components/login/login-form";
-import { login } from "@/services/auth-service";
+import { login, refresh } from "@/services/auth-service";
+import moment from "moment";
 
 export class AuthStore {
   token: string | null = null;
-  userData: TokenData | null = null;
+  refreshToken: string | null = null;
+  tokenData: TokenData | null = null;
   loading: boolean = false;
+
+  private readonly JWT_TOKEN: string = "jwt";
+  private readonly REFRESH_TOKEN: string = "refresh";
 
   constructor() {
     makeAutoObservable(this);
@@ -17,13 +22,26 @@ export class AuthStore {
     return !!this.token;
   }
 
+  get isTokenExpired() {
+    if (this.tokenData && this.token && this.refreshToken) {
+      const currentTime = moment().unix();
+      return this.tokenData.exp <= currentTime;
+    }
+
+    return false;
+  }
+
   async login(loginFormData: LoginFormData) {
     try {
       this.loading = true;
 
       const loginRequest = this.mapLoginFormDataToLoginRequest(loginFormData);
       const loginResponse = await login(loginRequest);
-      this.handleJwtToken(loginResponse.token);
+
+      this.token = loginResponse.token;
+      this.refreshToken = loginResponse.refreshToken;
+
+      this.handleJwtToken();
 
       this.loading = false;
     } catch {
@@ -31,61 +49,94 @@ export class AuthStore {
     }
   }
 
+  async refresh() {
+    try {
+      const refreshRequest = this.createRefreshRequest();
+      const refreshResponse = await refresh(refreshRequest);
+
+      this.token = refreshResponse.token;
+      this.refreshToken = refreshResponse.refreshToken;
+
+      this.handleJwtToken();
+    } catch {
+      this.clearStore();
+      this.clearAuthLocalStorage();
+    }
+  }
+
   logout() {
     this.clearStore();
-    window.localStorage.removeItem("jwt");
+    this.clearAuthLocalStorage();
   }
 
   tryAutoLogin() {
     this.clearStore();
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem(this.JWT_TOKEN);
+    const refreshToken = localStorage.getItem(this.REFRESH_TOKEN);
 
     if (!token) {
+      this.clearAuthLocalStorage();
       return;
     }
 
-    this.handleJwtToken(token);
+    this.token = token;
+    this.refreshToken = refreshToken;
+
+    this.handleJwtToken();
   }
 
   hasPermission(permission: string) {
-    if (!this.userData) {
+    if (!this.tokenData) {
       return false;
     }
 
-    return this.userData.permissions.includes(permission);
+    return this.tokenData.permissions?.includes(permission);
   }
 
-  handleJwtToken(token: string) {
-    this.token = token;
+  private handleJwtToken() {
     this.decodeJwtToken();
-    this.saveTokenToLocalStorage();
+    this.saveTokensToLocalStorage();
   }
 
-  decodeJwtToken() {
+  private decodeJwtToken() {
     if (!this.token) {
       return;
     }
 
-    this.userData = jwtDecode<TokenData>(this.token);
+    this.tokenData = jwtDecode<TokenData>(this.token);
   }
 
-  saveTokenToLocalStorage() {
-    if (!this.token) {
+  private saveTokensToLocalStorage() {
+    if (!this.token || !this.refreshToken) {
       return;
     }
 
-    window.localStorage.setItem("jwt", this.token);
+    window.localStorage.setItem(this.JWT_TOKEN, this.token);
+    window.localStorage.setItem(this.REFRESH_TOKEN, this.refreshToken);
   }
 
-  clearStore() {
+  private clearStore() {
     this.token = null;
-    this.userData = null;
+    this.refreshToken = null;
+    this.tokenData = null;
   }
 
-  mapLoginFormDataToLoginRequest(loginFormData: LoginFormData) {
+  private clearAuthLocalStorage() {
+    window.localStorage.removeItem(this.JWT_TOKEN);
+    window.localStorage.removeItem(this.REFRESH_TOKEN);
+  }
+
+  private mapLoginFormDataToLoginRequest(loginFormData: LoginFormData) {
     return {
       login: loginFormData.login,
       password: loginFormData.password,
     } as LoginRequest;
+  }
+
+  private createRefreshRequest() {
+    return {
+      token: this.token,
+      refreshToken: this.refreshToken,
+    } as RefreshRequest;
   }
 }

@@ -1,6 +1,5 @@
 import LoginForm from "@/components/login/login-form";
 import Logo from "@/assets/warehouse.png";
-import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   return (
@@ -12,11 +11,6 @@ const LoginPage = () => {
           <p className="text-sm text-muted-foreground">Enter your email to sign in to your account</p>
         </div>
         <LoginForm />
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link to="/register" className="hover:underline underline-offset-4">
-            Don&apos;t have an account? Sign Up
-          </Link>
-        </p>
       </div>
     </div>
   );

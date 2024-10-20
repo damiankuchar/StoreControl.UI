@@ -17,3 +17,13 @@ export interface LoginResponse {
   token: string;
   refreshToken: string;
 }
+
+export interface RefreshRequest {
+  token: string;
+  refreshToken: string;
+}
+
+export interface RefreshResponse {
+  token: string;
+  refreshToken: string;
+}

@@ -29,7 +29,22 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (res: AxiosResponse) => res,
-  (error: AxiosError<ApiErrorResponse>) => {
+  async (error: AxiosError<ApiErrorResponse>) => {
+    const { authStore } = rootStore;
+
+    const orginalRequest = error.config;
+    const isTokenExpired = error.response?.status === 401 && authStore.isTokenExpired;
+
+    if (isTokenExpired) {
+      await authStore.refresh();
+
+      if (authStore.isAuth && orginalRequest?.headers) {
+        orginalRequest.headers.Authorization = `Bearer ${authStore.token}`;
+
+        return api(orginalRequest);
+      }
+    }
+
     const { errorTitle, errorDescription } = getErrorMessage(error);
 
     toast({
@@ -42,12 +57,22 @@ api.interceptors.response.use(
   },
 );
 
-const getErrorMessage = (error: AxiosError<ApiErrorResponse>): ApiErrorDescription => {
+export const getErrorMessage = (error: AxiosError<ApiErrorResponse>): ApiErrorDescription => {
   switch (error.response?.status) {
     case 400:
       return {
         errorTitle: "Bad Request",
         errorDescription: error.response?.data.message ?? "An unknown error occurred.",
+      };
+    case 401:
+      return {
+        errorTitle: "Unauthorized",
+        errorDescription: "Your session has expired. Please log in again to continue.",
+      };
+    case 403:
+      return {
+        errorTitle: "Forbidden",
+        errorDescription: "Access Forbidden. You don't have permission to access requested resource.",
       };
     case 404:
       return {
