@@ -1,3 +1,4 @@
+import Layout from "@/components/common/layout";
 import AccessDeniedPage from "@/pages/access-denied-page";
 import { rootStore } from "@/stores/root-store";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
@@ -18,7 +19,11 @@ const ProtectedRoute = ({ permission }: ProtectedRouteProps) => {
     return <AccessDeniedPage />;
   }
 
-  return <Outlet />;
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
 };
 
 export default ProtectedRoute;

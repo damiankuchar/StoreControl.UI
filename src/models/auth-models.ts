@@ -1,7 +1,9 @@
 export interface TokenData {
   userId: number;
   email: string;
-  userName: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
   permissions: string[];
   nbf: number;
   exp: number;

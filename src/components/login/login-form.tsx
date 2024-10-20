@@ -27,8 +27,8 @@ const LoginForm = observer(() => {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      login: "",
-      password: "",
+      login: "admin",
+      password: "password",
     },
   });
 
