@@ -1,15 +1,21 @@
-import React from "react";
-import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import Header from "../header/header";
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import AppSidebar from "../sidebar/app-sidebar";
 
-const Layout = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout = ({ children }: LayoutProps) => {
+  return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarTrigger />
-      <div ref={ref} className={className} {...props} />
+      <SidebarInset>
+        <Header />
+        <div className="flex-1 container my-5">{children}</div>
+      </SidebarInset>
     </SidebarProvider>
-  ),
-);
+  );
+};
 
 export default Layout;

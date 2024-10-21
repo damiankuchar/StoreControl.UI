@@ -1,12 +1,13 @@
 import { AuthStore } from "./auth-store";
+import { ThemeStore } from "./theme-store";
 
 export class RootStore {
   authStore: AuthStore;
+  themeStore: ThemeStore;
 
   constructor() {
     this.authStore = new AuthStore();
-
-    this.authStore.tryAutoLogin();
+    this.themeStore = new ThemeStore();
   }
 }
 

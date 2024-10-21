@@ -16,6 +16,7 @@ export class AuthStore {
 
   constructor() {
     makeAutoObservable(this);
+    this.tryAutoLogin();
   }
 
   get isAuth() {
