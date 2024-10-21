@@ -10,4 +10,4 @@ export const login = async (body: LoginRequest) => {
 export const refresh = async (body: RefreshRequest) => {
   const response = await axiosRefreshTokenInstance.post<RefreshResponse>("auth/refresh", body);
   return response.data;
-}
+};

@@ -1,7 +1,5 @@
 const AccessDeniedPage = () => {
-  return (
-    <div>AccessDeniedPage</div>
-  )
-}
+  return <div>AccessDeniedPage</div>;
+};
 
-export default AccessDeniedPage
+export default AccessDeniedPage;
