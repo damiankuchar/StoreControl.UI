@@ -1,68 +1,42 @@
-import { ChevronRight, SquareTerminal } from "lucide-react";
-import {
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
-} from "../ui/sidebar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
-import { Link } from "react-router-dom";
+import { SidebarContent, SidebarGroup, SidebarGroupLabel } from "../ui/sidebar";
+import SidebarCollapsibleItem, { CollapsibleNavGroup } from "./sidebar-groups/sidebar-collapsible-item";
+import SidebarSimpleItem, { SimpleNavGroup } from "./sidebar-groups/sidebar-simple-item";
+import SidebarDropdownItem, { DropdownNavGroup } from "./sidebar-groups/sidebar-dropdown-item";
+import { NavGroup } from "@/stores/sidebar-store";
+import { rootStore } from "@/stores/root-store";
 
-const data = {
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-      ],
-    },
-  ],
+const isSimpleNavGroup = (navGroup: NavGroup): navGroup is SimpleNavGroup => {
+  return navGroup.type === "simple";
+};
+
+const isDropdownNavGroup = (navGroup: NavGroup): navGroup is DropdownNavGroup => {
+  return navGroup.type === "dropdown";
+};
+
+const isCollapsibleNavGroup = (navGroup: NavGroup): navGroup is CollapsibleNavGroup => {
+  return navGroup.type === "collapsible";
+};
+
+const renderSidebarItem = (data: NavGroup[]) => {
+  return data.map((item) => {
+    if (isSimpleNavGroup(item)) {
+      return <SidebarSimpleItem key={item.title} item={item} />;
+    } else if (isDropdownNavGroup(item)) {
+      return <SidebarDropdownItem key={item.title} item={item} />;
+    } else if (isCollapsibleNavGroup(item)) {
+      return <SidebarCollapsibleItem key={item.title} item={item} />;
+    }
+  });
 };
 
 const AppSidebarContent = () => {
+  const { sidebarStore } = rootStore;
+
   return (
     <SidebarContent>
       <SidebarGroup>
-        <SidebarGroupLabel>Platform</SidebarGroupLabel>
-        <SidebarMenu>
-          {data.navMain.map((item) => (
-            <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
-                          <Link to="">
-                            <span>{subItem.title}</span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-          ))}
-        </SidebarMenu>
+        <SidebarGroupLabel>Admin</SidebarGroupLabel>
+        {renderSidebarItem(sidebarStore.data)}
       </SidebarGroup>
     </SidebarContent>
   );
