@@ -1,6 +1,6 @@
 import Header from "../header/header";
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
-import AppSidebar from "../sidebar/app-sidebar";
+import AppSidebar from "../app-sidebar/app-sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
