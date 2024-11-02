@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
       <AppSidebar />
       <SidebarInset>
         <Header />
-        <div className="flex-1 mx-auto p-4 w-full">{children}</div>
+        <div className="flex-1 flex flex-col mx-auto p-6 w-full">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

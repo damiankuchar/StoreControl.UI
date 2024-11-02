@@ -7,7 +7,7 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
-import { ChevronRight, LucideProps } from "lucide-react";
+import { ChevronRight, Dot, LucideProps } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface CollapsibleNavItem {
@@ -45,6 +45,7 @@ const SidebarCollapsibleItem = ({ item }: SidebarCollapsibleItemProps) => {
                 <SidebarMenuSubItem key={subItem.title}>
                   <SidebarMenuSubButton asChild>
                     <Link to={subItem.url}>
+                      <Dot />
                       <span>{subItem.title}</span>
                     </Link>
                   </SidebarMenuSubButton>

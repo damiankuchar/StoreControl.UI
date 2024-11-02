@@ -22,6 +22,10 @@ const createInitialNavData = (): NavGroup[] => {
           title: "Manage users",
           url: "admin/users",
         },
+        {
+          title: "Manage roles",
+          url: "admin/roles",
+        },
       ],
     } as CollapsibleNavGroup,
   ];
