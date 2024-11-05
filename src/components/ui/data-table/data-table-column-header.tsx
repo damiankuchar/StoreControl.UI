@@ -10,6 +10,7 @@ import {
 import { CaretSortIcon, EyeNoneIcon } from "@radix-ui/react-icons";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import React from "react";
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;

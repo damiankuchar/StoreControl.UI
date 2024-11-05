@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { DataTableCellCheckbox, DataTableHeaderCheckbox } from "@/components/ui/data-table/data-table-checkbox";
 import DataTableColumnHeader from "@/components/ui/data-table/data-table-column-header";
 import {
   DropdownMenu,
@@ -23,31 +23,19 @@ export type User = {
 export const columns: ColumnDef<User>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-0.5"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-0.5"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
+    header: ({ table }) => <DataTableHeaderCheckbox table={table} />,
+    cell: ({ row }) => <DataTableCellCheckbox row={row} />,
+    size: 1,
   },
   {
     id: "no",
-    header: () => <div>No.</div>,
+    accessorFn: (_, index) => index + 1,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="No." className="font-bold" />,
     cell: ({ row }) => {
       return <div className="font-semibold">{row.index + 1}</div>;
     },
+    size: 1,
+    enableGlobalFilter: false,
   },
   {
     accessorKey: "username",
@@ -82,10 +70,11 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => console.log(row.id)}>Test</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => console.log(row.original)}>Test</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
+    size: 1,
   },
 ];
