@@ -1,17 +1,27 @@
-import { CreateUserRequest, RoleDto } from "@/models/user-models";
-import { createUser, getAllRoles } from "@/services/user-service";
+import { CreateUserRequest, RoleDto, UserDto } from "@/models/user-models";
+import { createUser, getAllRoles, getAllUsers } from "@/services/user-service";
 import { makeAutoObservable } from "mobx";
 import { Option } from "@/components/ui/multiple-selector";
-import { CreateUserFormData } from "@/components/admin/register-user-form";
+import { CreateUserFormData } from "@/components/admin/register-user/register-user-form";
 import { toast } from "@/components/ui/use-toast";
+import moment from "moment";
 
 export class UsersStore {
+  users: UserDto[] = [];
   roles: RoleDto[] = [];
   temp: string = "";
   loading: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  async getAllUsers() {
+    this.users = await getAllUsers();
+
+    this.users.forEach((user) => {
+      user.registrationDate = moment(user.registrationDate).format("DD.MM.YYYY");
+    });
   }
 
   async getAllRoles() {

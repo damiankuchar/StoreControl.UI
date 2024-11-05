@@ -1,15 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import MultipleSelector from "../ui/multiple-selector";
 import { useEffect } from "react";
 import { rootStore } from "@/stores/root-store";
 import { observer } from "mobx-react-lite";
 import { computed } from "mobx";
-import { Skeleton } from "../ui/skeleton";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import MultipleSelector from "@/components/ui/multiple-selector";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const roleOptionSchema = z.object({
   label: z.string(),

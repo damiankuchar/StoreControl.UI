@@ -10,7 +10,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="overflow-hidden">
         <Header />
         <div className="flex-1 flex flex-col mx-auto p-6 w-full">{children}</div>
       </SidebarInset>

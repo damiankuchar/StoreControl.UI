@@ -1,4 +1,4 @@
-import RegisterUserForm from "@/components/admin/register-user-form";
+import RegisterUserForm from "@/components/admin/register-user/register-user-form";
 import { Separator } from "@/components/ui/separator";
 
 const RegisterUserPage = () => {
