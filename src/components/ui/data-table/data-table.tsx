@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "../table";
 import DataTablePagination from "./data-table-pagination";
+import DataTableColumnResizer from "./data-table-column-resizer";
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   table: TanstackTable<TData>;
@@ -18,8 +19,9 @@ const DataTable = <TData,>({ table, children, className, ...props }: DataTablePr
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} style={{ width: header.getSize() }}>
+                    <TableHead key={header.id} className="relative" style={{ width: header.getSize() }}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      <DataTableColumnResizer header={header} />
                     </TableHead>
                   );
                 })}

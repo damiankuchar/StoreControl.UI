@@ -25,6 +25,7 @@ export const columns: ColumnDef<User>[] = [
     id: "select",
     header: ({ table }) => <DataTableHeaderCheckbox table={table} />,
     cell: ({ row }) => <DataTableCellCheckbox row={row} />,
+    enableResizing: false,
     size: 1,
   },
   {
@@ -76,5 +77,6 @@ export const columns: ColumnDef<User>[] = [
       );
     },
     size: 1,
+    enableResizing: false,
   },
 ];

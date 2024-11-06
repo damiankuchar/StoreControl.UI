@@ -30,6 +30,7 @@ const UsersDataTable = observer(() => {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    columnResizeMode: "onChange",
     state: {
       sorting,
     },
