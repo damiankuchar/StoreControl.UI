@@ -1,7 +1,7 @@
-import { toast } from "@/components/ui/use-toast";
 import { ApiErrorDescription, ApiErrorResponse } from "@/models/api-error-models";
 import { rootStore } from "@/stores/root-store";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { toast } from "sonner";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -47,10 +47,8 @@ api.interceptors.response.use(
 
     const { errorTitle, errorDescription } = getErrorMessage(error);
 
-    toast({
-      title: errorTitle,
+    toast.error(errorTitle, {
       description: errorDescription,
-      variant: "destructive",
     });
 
     return Promise.reject(error);

@@ -1,15 +1,15 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { BrowserRouter } from "react-router-dom";
 import ErrorPage from "./pages/error-page";
-import { Toaster } from "./components/ui/toaster";
 import Router from "./router/router";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   return (
     <BrowserRouter>
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <Router />
-        <Toaster />
+        <Toaster closeButton richColors position="top-right" />
       </ErrorBoundary>
     </BrowserRouter>
   );

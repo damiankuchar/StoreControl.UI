@@ -3,8 +3,8 @@ import { createUser, getAllRoles, getAllUsers } from "@/services/user-service";
 import { makeAutoObservable } from "mobx";
 import { Option } from "@/components/ui/multiple-selector";
 import { CreateUserFormData } from "@/components/admin/register-user/register-user-form";
-import { toast } from "@/components/ui/use-toast";
 import moment from "moment";
+import { toast } from "sonner";
 
 export class UsersStore {
   users: UserDto[] = [];
@@ -38,11 +38,7 @@ export class UsersStore {
       this.loading = false;
 
       if (response) {
-        toast({
-          title: "Success",
-          description: "User has been created successfully!",
-          variant: "default",
-        });
+        toast.success("User has been created successfully!");
 
         return true;
       }

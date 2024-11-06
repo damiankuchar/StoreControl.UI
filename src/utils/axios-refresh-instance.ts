@@ -1,8 +1,8 @@
 import { ApiErrorResponse } from "@/models/api-error-models";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getErrorMessage } from "./axios-instance";
-import { toast } from "@/components/ui/use-toast";
 import globalRouter from "@/router/global-router";
+import { toast } from "sonner";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -18,10 +18,8 @@ axiosRefreshTokenInstance.interceptors.response.use(
   async (error: AxiosError<ApiErrorResponse>) => {
     const { errorTitle, errorDescription } = getErrorMessage(error);
 
-    toast({
-      title: errorTitle,
+    toast.error(errorTitle, {
       description: errorDescription,
-      variant: "destructive",
     });
 
     if (globalRouter.navigate) {
