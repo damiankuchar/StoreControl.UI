@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-selector";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 const roleOptionSchema = z.object({
   label: z.string(),
@@ -54,6 +55,8 @@ export type CreateUserFormData = z.infer<typeof createUserSchema>;
 const RegisterUserForm = observer(() => {
   const { usersStore } = rootStore;
 
+  const navigate = useNavigate();
+
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -72,7 +75,11 @@ const RegisterUserForm = observer(() => {
   }, [usersStore]);
 
   const onSubmit = async (createUserFormData: CreateUserFormData) => {
-    await usersStore.createUser(createUserFormData);
+    const isSuccessfull = await usersStore.createUser(createUserFormData);
+
+    if (isSuccessfull) {
+      navigate("/admin/users");
+    }
   };
 
   const isRolesOptionLoading = computed(() => usersStore.roleOptions.length > 0).get();

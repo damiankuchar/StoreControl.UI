@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { observer } from "mobx-react-lite";
 import DataTableToolbar from "@/components/ui/data-table/data-table-toolbar";
+import UsersDataTableToolbar from "./users-data-table-toolbar";
 
 const UsersDataTable = observer(() => {
   const { usersStore } = rootStore;
@@ -38,7 +39,9 @@ const UsersDataTable = observer(() => {
 
   return (
     <DataTable table={table}>
-      <DataTableToolbar table={table} exporting={true} />
+      <DataTableToolbar table={table} exporting={true}>
+        <UsersDataTableToolbar />
+      </DataTableToolbar>
     </DataTable>
   );
 });

@@ -8,7 +8,7 @@ const ModeToggle = () => {
 
   return (
     <TooltipProvider disableHoverableContent>
-      <Tooltip delayDuration={100}>
+      <Tooltip>
         <TooltipTrigger asChild>
           <Button
             className="rounded-full w-8 h-8"

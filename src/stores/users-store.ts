@@ -35,15 +35,19 @@ export class UsersStore {
       const createUserRequest = this.mapCreateUserFormDataToRequest(createUserFormData);
       const response = await createUser(createUserRequest);
 
+      this.loading = false;
+
       if (response) {
         toast({
           title: "Success",
           description: "User has been created successfully!",
           variant: "default",
         });
+
+        return true;
       }
 
-      this.loading = false;
+      return false;
     } catch {
       this.loading = false;
     }

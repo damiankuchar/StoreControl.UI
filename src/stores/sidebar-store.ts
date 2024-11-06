@@ -15,10 +15,6 @@ const createInitialNavData = (): NavGroup[] => {
       isActive: true,
       items: [
         {
-          title: "Register user",
-          url: "/admin/register-user",
-        },
-        {
           title: "Manage users",
           url: "admin/users",
         },
