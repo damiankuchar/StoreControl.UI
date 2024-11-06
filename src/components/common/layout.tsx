@@ -1,14 +1,17 @@
 import Header from "../header/header";
-import { SidebarInset, SidebarProvider } from "../ui/sidebar";
+import { SIDEBAR_COOKIE_NAME, SidebarInset, SidebarProvider } from "../ui/sidebar";
 import AppSidebar from "../app-sidebar/app-sidebar";
+import { getCookie } from "@/lib/cookie";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const defaultOpen = getCookie(SIDEBAR_COOKIE_NAME) === "false";
+
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
       <SidebarInset className="overflow-hidden">
         <Header />
