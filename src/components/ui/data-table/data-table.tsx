@@ -10,10 +10,10 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   table: TanstackTable<TData>;
 }
 
-const DataTable = <TData,>({ table, children, className, ...props }: DataTableProps<TData>) => {  
-  const columnSizingInfo = table.getState().columnSizingInfo
-  const columnSizing = table.getState().columnSizing
-  
+const DataTable = <TData,>({ table, children, className, ...props }: DataTableProps<TData>) => {
+  const columnSizingInfo = table.getState().columnSizingInfo;
+  const columnSizing = table.getState().columnSizing;
+
   const columnSizeVars = useMemo(() => {
     const headers = table.getFlatHeaders();
     const colSizes: { [key: string]: number } = {};
@@ -25,8 +25,8 @@ const DataTable = <TData,>({ table, children, className, ...props }: DataTablePr
     }
 
     return colSizes;
-  // Recalculating column sizes on change of table sizing state.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Recalculating column sizes on change of table sizing state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [table, columnSizingInfo, columnSizing]);
 
   return (
@@ -36,7 +36,7 @@ const DataTable = <TData,>({ table, children, className, ...props }: DataTablePr
         <Table style={{ ...columnSizeVars }}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent cursor-pointer">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
