@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-selector";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNavigate } from "react-router-dom";
 
 const roleOptionSchema = z.object({
   label: z.string(),
@@ -55,19 +54,9 @@ export type CreateUserFormData = z.infer<typeof createUserSchema>;
 const RegisterUserForm = observer(() => {
   const { usersStore } = rootStore;
 
-  const navigate = useNavigate();
-
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
-    defaultValues: {
-      username: "",
-      email: "",
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-      roles: [],
-    },
+    defaultValues: usersStore.createUserFormDefaultValues,
   });
 
   useEffect(() => {
@@ -75,10 +64,11 @@ const RegisterUserForm = observer(() => {
   }, [usersStore]);
 
   const onSubmit = async (createUserFormData: CreateUserFormData) => {
-    const isSuccessfull = await usersStore.createUser(createUserFormData);
+    const isSuccessfull = await usersStore.userFormSubmit(createUserFormData);
 
     if (isSuccessfull) {
-      navigate("/admin/users");
+      await usersStore.getAllUsers();
+      usersStore.closeSheet();
     }
   };
 
@@ -94,7 +84,12 @@ const RegisterUserForm = observer(() => {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input
+                  placeholder="Username"
+                  {...field}
+                  readOnly={usersStore.isFormViewMode}
+                  disabled={usersStore.isFormUpdateMode}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -107,7 +102,12 @@ const RegisterUserForm = observer(() => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input
+                  placeholder="Email"
+                  {...field}
+                  readOnly={usersStore.isFormViewMode}
+                  disabled={usersStore.isFormUpdateMode}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -120,7 +120,12 @@ const RegisterUserForm = observer(() => {
             <FormItem>
               <FormLabel>First name</FormLabel>
               <FormControl>
-                <Input placeholder="First name" {...field} />
+                <Input
+                  placeholder="First name"
+                  {...field}
+                  readOnly={usersStore.isFormViewMode}
+                  disabled={usersStore.isFormUpdateMode}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,38 +138,47 @@ const RegisterUserForm = observer(() => {
             <FormItem>
               <FormLabel>Last name</FormLabel>
               <FormControl>
-                <Input placeholder="Last name" {...field} />
+                <Input
+                  placeholder="Last name"
+                  {...field}
+                  readOnly={usersStore.isFormViewMode}
+                  disabled={usersStore.isFormUpdateMode}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Password" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <>
-              <FormLabel>Confirm password</FormLabel>
-              <FormControl>
-                <Input placeholder="Confirm password" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </>
-          )}
-        />
+        {usersStore.isFormViewMode || usersStore.isFormUpdateMode ? null : (
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Password" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        {usersStore.isFormViewMode || usersStore.isFormUpdateMode ? null : (
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <>
+                <FormLabel>Confirm password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Confirm password" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="roles"
@@ -178,6 +192,7 @@ const RegisterUserForm = observer(() => {
                     defaultOptions={usersStore.roleOptions}
                     placeholder="Select roles..."
                     hidePlaceholderWhenSelected
+                    disabled={usersStore.isFormViewMode}
                   />
                 ) : (
                   <Skeleton className="h-9" />
@@ -186,9 +201,15 @@ const RegisterUserForm = observer(() => {
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" loading={usersStore.loading}>
-          Register user
-        </Button>
+        {usersStore.isFormViewMode ? (
+          <Button type="button" size="sm" onClick={() => usersStore.closeSheet()}>
+            {usersStore.buttonText}
+          </Button>
+        ) : (
+          <Button type="submit" size="sm" loading={usersStore.loading}>
+            {usersStore.buttonText}
+          </Button>
+        )}
       </form>
     </Form>
   );

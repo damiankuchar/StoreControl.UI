@@ -4,7 +4,6 @@ import UnauthRoute from "./unauth-route";
 import ProtectedRoute from "./protected-route";
 import LoginPage from "@/pages/login-page";
 import globalRouter from "./global-router";
-import RegisterUserPage from "@/pages/register-user-page";
 import UsersPage from "@/pages/users-page";
 
 const Router = () => {
@@ -21,10 +20,6 @@ const Router = () => {
       {/* Protected routes with permission */}
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<div>Home</div>} />
-      </Route>
-
-      <Route element={<ProtectedRoute />}>
-        <Route path="admin/register-user" element={<RegisterUserPage />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>

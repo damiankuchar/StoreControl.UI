@@ -1,16 +1,8 @@
 import { Separator } from "@/components/ui/separator";
 import UsersIcon from "@/assets/users.svg";
-import { rootStore } from "@/stores/root-store";
-import { useEffect } from "react";
 import UsersDataTable from "@/components/admin/users/users-data-table";
 
 const UsersPage = () => {
-  const { usersStore } = rootStore;
-
-  useEffect(() => {
-    usersStore.getAllUsers();
-  }, [usersStore]);
-
   return (
     <div>
       <div className="flex flex-row space-x-6">

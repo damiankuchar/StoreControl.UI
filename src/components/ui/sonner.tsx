@@ -9,6 +9,7 @@ const Toaster = observer(({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
+      className="pointer-events-auto"
       theme={themeStore.theme as ToasterProps["theme"]}
       toastOptions={{
         classNames: {

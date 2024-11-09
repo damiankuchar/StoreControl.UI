@@ -13,6 +13,10 @@ export interface CreateUserRequest {
   roleIds: string[];
 }
 
+export interface UpdateUserRequest {
+  roleIds: string[];
+}
+
 export interface UserDetailedDto {
   id: string;
   username: string;

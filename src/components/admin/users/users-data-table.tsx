@@ -13,6 +13,9 @@ import { columns } from "./columns";
 import { observer } from "mobx-react-lite";
 import DataTableToolbar from "@/components/ui/data-table/data-table-toolbar";
 import UsersDataTableToolbar from "./users-data-table-toolbar";
+import UsersSheet from "./users-sheet";
+import RegisterUserForm from "../register-user/register-user-form";
+import DeleteUserDialog from "./delete-user-dialog";
 
 const UsersDataTable = observer(() => {
   const { usersStore } = rootStore;
@@ -38,11 +41,17 @@ const UsersDataTable = observer(() => {
   });
 
   return (
-    <DataTable table={table}>
-      <DataTableToolbar table={table} exporting={true}>
-        <UsersDataTableToolbar />
-      </DataTableToolbar>
-    </DataTable>
+    <>
+      <DataTable table={table}>
+        <DataTableToolbar table={table} exporting={true}>
+          <UsersDataTableToolbar />
+        </DataTableToolbar>
+      </DataTable>
+      <UsersSheet open={usersStore.isSheetOpen} onOpenChange={() => usersStore.closeSheet()}>
+        <RegisterUserForm />
+      </UsersSheet>
+      <DeleteUserDialog open={usersStore.isDeleteDialogOpen} onOpenChange={() => usersStore.closeDeleteDialog()} />
+    </>
   );
 });
 

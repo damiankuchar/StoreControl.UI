@@ -55,7 +55,16 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
   ({ side = "right", className, children, ...props }, ref) => (
     <SheetPortal>
       <SheetOverlay />
-      <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
+      <SheetPrimitive.Content
+        ref={ref}
+        className={cn(sheetVariants({ side }), className)}
+        {...props}
+        onPointerDownOutside={(e) => {
+          if (e.target instanceof Element && e.target.closest("[data-sonner-toast]")) {
+            e.preventDefault();
+          }
+        }}
+      >
         {children}
         <SheetTitle></SheetTitle>
         <SheetDescription></SheetDescription>
