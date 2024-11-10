@@ -1,10 +1,5 @@
-import { CreateUserRequest, RoleDto, UpdateUserRequest, UserDetailedDto, UserDto } from "@/models/user-models";
+import { CreateUserRequest, UpdateUserRequest, UserDetailedDto, UserDto } from "@/models/user-models";
 import api from "@/utils/axios-instance";
-
-export const getAllRoles = async () => {
-  const response = await api.get<RoleDto[]>("roles");
-  return response.data;
-};
 
 export const getAllUsers = async () => {
   const response = await api.get<UserDto[]>("users");

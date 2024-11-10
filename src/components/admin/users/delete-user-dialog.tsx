@@ -8,9 +8,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { rootStore } from "@/stores/root-store";
+import { useDeleteUser } from "@/hooks/mutations/user-mutations";
+import { useUserStore } from "@/stores/user-store";
+
 const DeleteUserDialog = ({ ...props }: React.ComponentPropsWithoutRef<typeof Dialog>) => {
-  const { usersStore } = rootStore;
+  const userId = useUserStore((state) => state.userId);
+
+  const { mutate: deleteUser, isPending } = useDeleteUser();
 
   return (
     <Dialog {...props}>
@@ -23,7 +27,7 @@ const DeleteUserDialog = ({ ...props }: React.ComponentPropsWithoutRef<typeof Di
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button variant="destructive" onClick={() => usersStore.deleteUser()} loading={usersStore.deleteLoading}>
+          <Button variant="destructive" onClick={() => deleteUser(userId)} loading={isPending}>
             Delete
           </Button>
         </DialogFooter>

@@ -1,5 +1,4 @@
 import DataTable from "@/components/ui/data-table/data-table";
-import { rootStore } from "@/stores/root-store";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -8,26 +7,30 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { columns } from "./columns";
-import { observer } from "mobx-react-lite";
 import DataTableToolbar from "@/components/ui/data-table/data-table-toolbar";
 import UsersDataTableToolbar from "./users-data-table-toolbar";
 import UsersSheet from "./users-sheet";
-import RegisterUserForm from "../register-user/register-user-form";
 import DeleteUserDialog from "./delete-user-dialog";
+import { UserDto } from "@/models/user-models";
+import { useUsers } from "@/hooks/queries/user-queries";
+import { useUserStore } from "@/stores/user-store";
 
-const UsersDataTable = observer(() => {
-  const { usersStore } = rootStore;
+const fallbackData: UserDto[] = [];
+
+const UsersDataTable = () => {
+  const isSheetOpen = useUserStore((state) => state.isSheetOpen);
+  const isDialogOpen = useUserStore((state) => state.isDialogOpen);
+  const closeSheet = useUserStore((state) => state.closeSheet);
+  const closeDialog = useUserStore((state) => state.closeDialog);
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  useEffect(() => {
-    usersStore.getAllUsers();
-  }, [usersStore]);
+  const { data } = useUsers();
 
   const table = useReactTable({
-    data: usersStore.users,
+    data: data ?? fallbackData,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -47,12 +50,10 @@ const UsersDataTable = observer(() => {
           <UsersDataTableToolbar />
         </DataTableToolbar>
       </DataTable>
-      <UsersSheet open={usersStore.isSheetOpen} onOpenChange={() => usersStore.closeSheet()}>
-        <RegisterUserForm />
-      </UsersSheet>
-      <DeleteUserDialog open={usersStore.isDeleteDialogOpen} onOpenChange={() => usersStore.closeDeleteDialog()} />
+      <UsersSheet open={isSheetOpen} onOpenChange={closeSheet} />
+      <DeleteUserDialog open={isDialogOpen} onOpenChange={closeDialog} />
     </>
   );
-});
+};
 
 export default UsersDataTable;
