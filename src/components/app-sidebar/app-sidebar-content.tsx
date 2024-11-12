@@ -2,8 +2,7 @@ import { SidebarContent, SidebarGroup, SidebarGroupLabel } from "../ui/sidebar";
 import SidebarCollapsibleItem, { CollapsibleNavGroup } from "./sidebar-groups/sidebar-collapsible-item";
 import SidebarSimpleItem, { SimpleNavGroup } from "./sidebar-groups/sidebar-simple-item";
 import SidebarDropdownItem, { DropdownNavGroup } from "./sidebar-groups/sidebar-dropdown-item";
-import { NavGroup } from "@/stores/sidebar-store";
-import { rootStore } from "@/stores/root-store";
+import { NavGroup, sidebarData } from "./sidebar-content";
 
 const isSimpleNavGroup = (navGroup: NavGroup): navGroup is SimpleNavGroup => {
   return navGroup.type === "simple";
@@ -30,13 +29,11 @@ const renderSidebarItem = (data: NavGroup[]) => {
 };
 
 const AppSidebarContent = () => {
-  const { sidebarStore } = rootStore;
-
   return (
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>Admin</SidebarGroupLabel>
-        {renderSidebarItem(sidebarStore.data)}
+        {renderSidebarItem(sidebarData)}
       </SidebarGroup>
     </SidebarContent>
   );

@@ -1,6 +1,5 @@
 import { configure } from "mobx";
 import { AuthStore } from "./auth-store";
-import { SidebarStore } from "./sidebar-store";
 
 configure({
   enforceActions: "never", // disables strict-mode
@@ -8,11 +7,9 @@ configure({
 
 export class RootStore {
   authStore: AuthStore;
-  sidebarStore: SidebarStore;
 
   constructor() {
     this.authStore = new AuthStore();
-    this.sidebarStore = new SidebarStore();
   }
 }
 
