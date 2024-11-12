@@ -1,3 +1,5 @@
+import ErrorAlert from "@/components/common/error-alert";
+import FormSkeleton from "@/components/common/form-skeleton";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import MultipleSelector from "@/components/ui/multiple-selector";
@@ -27,7 +29,7 @@ const UpdateUserForm = () => {
   const userId = useUserStore((state) => state.userId);
 
   const { data: userData } = useUserById(userId);
-  const { isPending: isRolesOptionsPending, data: rolesOptions } = useRolesOptions();
+  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: rolesOptions } = useRolesOptions();
 
   const { mutate: updateUser, isPending: isUpdateUserPending } = useUpdateUser();
 
@@ -49,6 +51,19 @@ const UpdateUserForm = () => {
 
     updateUser({ id: userId, data: request });
   };
+
+  if (isRolesOptionsPending) {
+    return <FormSkeleton count={1} />;
+  }
+
+  if (isRolesOptionsError) {
+    return (
+      <ErrorAlert
+        title="Update Action Unavailable"
+        description="Unable to load roles info. Please refresh or try again."
+      />
+    );
+  }
 
   return (
     <Form {...form}>

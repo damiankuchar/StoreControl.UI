@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import ErrorAlert from "@/components/common/error-alert";
+import FormSkeleton from "@/components/common/form-skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
@@ -8,7 +9,6 @@ import React from "react";
 
 const ViewUserForm = () => {
   const userId = useUserStore((state) => state.userId);
-  const closeSheet = useUserStore((state) => state.closeSheet);
 
   const { isPending, isError, data } = useUserById(userId);
 
@@ -21,40 +21,46 @@ const ViewUserForm = () => {
   }, [data]);
 
   if (isPending) {
-    // TODO: Render sceleton component
-    return <div>Pending...</div>;
+    return <FormSkeleton count={5} />;
   }
 
   if (isError) {
-    // TODO: Render error component
-    return <div>Error...</div>;
+    return (
+      <ErrorAlert
+        title="User Data Unavailable"
+        description="Unable to load user details. Please refresh or try again."
+      />
+    );
   }
 
   return (
     <div className="space-y-4">
-      <div>
+      <div className="space-y-2">
         <Label>Username</Label>
         <Input placeholder="Username" value={data.username} readOnly={true} />
       </div>
-      <div>
+      <div className="space-y-2">
         <Label>Email</Label>
         <Input placeholder="Email" value={data.email} readOnly={true} />
       </div>
-      <div>
+      <div className="space-y-2">
         <Label>First name</Label>
         <Input placeholder="First name" value={data.firstName} readOnly={true} />
       </div>
-      <div>
+      <div className="space-y-2">
         <Label>Last name</Label>
         <Input placeholder="Last name" value={data.lastName} readOnly={true} />
       </div>
-      <div>
+      <div className="space-y-2">
         <Label>Roles</Label>
-        <MultipleSelector value={userRolesOptions} placeholder="No roles assigned" emptyIndicator={<span>Brak</span>} disabled={true} hidePlaceholderWhenSelected />
+        <MultipleSelector
+          value={userRolesOptions}
+          placeholder="No roles assigned"
+          emptyIndicator={<span>Brak</span>}
+          disabled={true}
+          hidePlaceholderWhenSelected
+        />
       </div>
-      <Button type="submit" size="sm" onClick={() => closeSheet()}>
-        Close
-      </Button>
     </div>
   );
 };

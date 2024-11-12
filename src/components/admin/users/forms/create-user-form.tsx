@@ -1,3 +1,5 @@
+import ErrorAlert from "@/components/common/error-alert";
+import FormSkeleton from "@/components/common/form-skeleton";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -51,19 +53,19 @@ const createUserSchema = z
 type CreateUserFormData = z.infer<typeof createUserSchema>;
 
 const CreateUserForm = () => {
-  const { isPending: isRolesOptionsPending, data: rolesOptions } = useRolesOptions();
+  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: rolesOptions } = useRolesOptions();
 
   const { mutate: createUser, isPending: isCreateUserPending } = useCreateUser();
 
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
-      username: "test",
-      email: "test@test.com",
-      firstName: "test",
-      lastName: "test",
-      password: "password",
-      confirmPassword: "password",
+      username: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      confirmPassword: "",
       roles: [],
     },
   });
@@ -81,6 +83,19 @@ const CreateUserForm = () => {
 
     createUser(request);
   };
+
+  if (isRolesOptionsPending) {
+    return <FormSkeleton count={7} />;
+  }
+
+  if (isRolesOptionsError) {
+    return (
+      <ErrorAlert
+        title="Create Action Unavailable"
+        description="Unable to load roles info. Please refresh or try again."
+      />
+    );
+  }
 
   return (
     <Form {...form}>
