@@ -14,7 +14,7 @@ interface UserStore {
   closeDialog: () => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>()((set) => ({
   isSheetOpen: false,
   isDialogOpen: false,
   formType: null,

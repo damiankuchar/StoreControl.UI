@@ -9,16 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { rootStore } from "@/stores/root-store";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth-store";
 
 const AppSidebarFooter = () => {
-  const { authStore } = rootStore;
   const navigate = useNavigate();
+  const tokenData = useAuthStore((state) => state.tokenData);
+  const clearTokens = useAuthStore((state) => state.clearTokens);
 
   const createUserInitials = () => {
-    const firstName = authStore.tokenData?.firstName;
-    const lastName = authStore.tokenData?.lastName;
+    const firstName = tokenData?.firstName;
+    const lastName = tokenData?.lastName;
 
     if (!firstName || !lastName) {
       return "";
@@ -31,7 +32,7 @@ const AppSidebarFooter = () => {
   };
 
   const handleLogout = () => {
-    authStore.logout();
+    clearTokens();
     navigate("/login");
   };
 
@@ -49,8 +50,8 @@ const AppSidebarFooter = () => {
                   <AvatarFallback className="rounded-lg">{createUserInitials()}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{authStore.tokenData?.fullName}</span>
-                  <span className="truncate text-xs">{authStore.tokenData?.email}</span>
+                  <span className="truncate font-semibold">{tokenData?.fullName}</span>
+                  <span className="truncate text-xs">{tokenData?.email}</span>
                 </div>
                 <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>
@@ -67,8 +68,8 @@ const AppSidebarFooter = () => {
                     <AvatarFallback className="rounded-lg">{createUserInitials()}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{authStore.tokenData?.fullName}</span>
-                    <span className="truncate text-xs">{authStore.tokenData?.email}</span>
+                    <span className="truncate font-semibold">{tokenData?.fullName}</span>
+                    <span className="truncate text-xs">{tokenData?.email}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>

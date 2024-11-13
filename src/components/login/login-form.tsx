@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useLogin } from "@/hooks/mutations/auth-mutations";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { observer } from "mobx-react-lite";
-import { rootStore } from "@/stores/root-store";
+import { toast } from "sonner";
 
 const loginFormSchema = z.object({
   login: z.string().min(1, {
@@ -20,9 +20,9 @@ const loginFormSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginFormSchema>;
 
-const LoginForm = observer(() => {
+const LoginForm = () => {
   const navigate = useNavigate();
-  const { authStore } = rootStore;
+  const { mutate: login, isPending, isSuccess } = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
@@ -33,8 +33,12 @@ const LoginForm = observer(() => {
   });
 
   const onSubmit = async (loginFormData: LoginFormData) => {
-    await authStore.login(loginFormData);
-    navigate("");
+    login(loginFormData);
+
+    if (isSuccess) {
+      toast.success("Successfully logged in!");
+      navigate("");
+    }
   };
 
   return (
@@ -80,7 +84,7 @@ const LoginForm = observer(() => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" loading={authStore.loading}>
+            <Button type="submit" className="w-full" loading={isPending}>
               Login
             </Button>
           </form>
@@ -88,6 +92,6 @@ const LoginForm = observer(() => {
       </CardContent>
     </Card>
   );
-});
+};
 
 export default LoginForm;

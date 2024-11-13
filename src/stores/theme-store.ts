@@ -3,12 +3,6 @@ import { persist } from "zustand/middleware";
 
 type Theme = "dark" | "light";
 
-const applyTheme = (theme: Theme) => {
-  const root = window.document.documentElement;
-  root.classList.remove("light", "dark");
-  root.classList.add(theme);
-};
-
 interface ThemeStore {
   theme: Theme;
   setTheme: (theme: Theme) => void;
@@ -19,14 +13,13 @@ export const useThemeStore = create<ThemeStore>()(
   persist(
     (set) => ({
       theme: "light",
+
       setTheme: (theme) =>
         set((state) => {
           state.theme = theme;
-
           const root = window.document.documentElement;
           root.classList.remove("light", "dark");
           root.classList.add(state.theme);
-
           return { theme: theme };
         }),
 
@@ -47,3 +40,9 @@ export const useThemeStore = create<ThemeStore>()(
     },
   ),
 );
+
+function applyTheme(theme: Theme) {
+  const root = window.document.documentElement;
+  root.classList.remove("light", "dark");
+  root.classList.add(theme);
+}

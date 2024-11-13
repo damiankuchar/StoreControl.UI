@@ -1,5 +1,6 @@
 import { ApiErrorDescription, ApiErrorResponse } from "@/models/api-error-models";
-import { rootStore } from "@/stores/root-store";
+import { refresh } from "@/services/auth-service";
+import { useAuthStore } from "@/stores/auth-store";
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 
@@ -14,10 +15,11 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (req: InternalAxiosRequestConfig) => {
-    const { authStore } = rootStore;
+    const token = useAuthStore.getState().token;
+    const isAuth = useAuthStore.getState().isAuth;
 
-    if (authStore.isAuth) {
-      req.headers.Authorization = `Bearer ${authStore.token}`;
+    if (isAuth()) {
+      req.headers.Authorization = `Bearer ${token}`;
     }
 
     return req;
@@ -30,16 +32,26 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res: AxiosResponse) => res,
   async (error: AxiosError<ApiErrorResponse>) => {
-    const { authStore } = rootStore;
+    const token = useAuthStore.getState().token ?? "";
+    const refreshToken = useAuthStore.getState().refreshToken ?? "";
+    const isTokenExpiredFn = useAuthStore.getState().isTokenExpired;
+    const isAuth = useAuthStore.getState().isAuth;
+    const setTokens = useAuthStore.getState().setTokens;
+    const clearTokens = useAuthStore.getState().clearTokens;
 
     const orginalRequest = error.config;
-    const isTokenExpired = error.response?.status === 401 && authStore.isTokenExpired;
+    const isTokenExpired = error.response?.status === 401 && isTokenExpiredFn();
 
     if (isTokenExpired) {
-      await authStore.refresh();
+      try {
+        const response = await refresh({ token: token, refreshToken: refreshToken });
+        setTokens(response.token, response.refreshToken);
+      } catch {
+        clearTokens();
+      }
 
-      if (authStore.isAuth && orginalRequest?.headers) {
-        orginalRequest.headers.Authorization = `Bearer ${authStore.token}`;
+      if (isAuth() && orginalRequest?.headers) {
+        orginalRequest.headers.Authorization = `Bearer ${token}`;
 
         return api(orginalRequest);
       }
