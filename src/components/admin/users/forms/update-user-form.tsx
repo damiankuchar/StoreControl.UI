@@ -11,6 +11,7 @@ import { UpdateUserRequest } from "@/models/user-models";
 import { useUserStore } from "@/stores/user-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const roleOptionSchema = z.object({
@@ -27,11 +28,12 @@ type UpdateUserFormData = z.infer<typeof updateUserSchema>;
 
 const UpdateUserForm = () => {
   const userId = useUserStore((state) => state.userId);
+  const closeSheet = useUserStore((state) => state.closeSheet);
 
   const { data: userData } = useUserById(userId);
   const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: rolesOptions } = useRolesOptions();
 
-  const { mutate: updateUser, isPending: isUpdateUserPending } = useUpdateUser();
+  const { mutate: updateUser, isPending: isUpdateUserPending, isSuccess: isUpdateUserSuccess } = useUpdateUser();
 
   const form = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
@@ -44,12 +46,17 @@ const UpdateUserForm = () => {
     },
   });
 
-  const onSubmit = async (formData: UpdateUserFormData) => {
+  const onSubmit = (formData: UpdateUserFormData) => {
     const request: UpdateUserRequest = {
       roleIds: formData.roles.map((role) => role.value),
     };
 
     updateUser({ id: userId, data: request });
+
+    if (isUpdateUserSuccess) {
+      toast.success("User has been successfully updated!");
+      closeSheet();
+    }
   };
 
   if (isRolesOptionsPending) {

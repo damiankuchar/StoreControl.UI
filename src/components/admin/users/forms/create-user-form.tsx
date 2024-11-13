@@ -8,8 +8,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCreateUser } from "@/hooks/mutations/user-mutations";
 import { useRolesOptions } from "@/hooks/queries/role-queries";
 import { CreateUserRequest } from "@/models/user-models";
+import { useUserStore } from "@/stores/user-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const roleOptionSchema = z.object({
@@ -53,9 +55,11 @@ const createUserSchema = z
 type CreateUserFormData = z.infer<typeof createUserSchema>;
 
 const CreateUserForm = () => {
+  const closeSheet = useUserStore((state) => state.closeSheet);
+
   const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: rolesOptions } = useRolesOptions();
 
-  const { mutate: createUser, isPending: isCreateUserPending } = useCreateUser();
+  const { mutate: createUser, isPending: isCreateUserPending, isSuccess: isCreateUserSuccess } = useCreateUser();
 
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
@@ -82,6 +86,11 @@ const CreateUserForm = () => {
     };
 
     createUser(request);
+
+    if (isCreateUserSuccess) {
+      toast.success("User has been successfully created!");
+      closeSheet();
+    }
   };
 
   if (isRolesOptionsPending) {
