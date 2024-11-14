@@ -6,13 +6,15 @@ import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-selector";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCreateUser } from "@/hooks/mutations/user-mutations";
-import { useRolesOptions } from "@/hooks/queries/role-queries";
+import { useRoles } from "@/hooks/queries/role-queries";
 import { CreateUserRequest } from "@/models/user-models";
 import { useUserStore } from "@/stores/user-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Option } from "@/components/ui/multiple-selector";
+import React from "react";
 
 const roleOptionSchema = z.object({
   label: z.string(),
@@ -57,9 +59,17 @@ type CreateUserFormData = z.infer<typeof createUserSchema>;
 const CreateUserForm = () => {
   const closeSheet = useUserStore((state) => state.closeSheet);
 
-  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: rolesOptions } = useRolesOptions();
+  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: roles } = useRoles();
 
-  const { mutate: createUser, isPending: isCreateUserPending, isSuccess: isCreateUserSuccess } = useCreateUser();
+  const { mutate: createUser, isPending: isCreateUserPending } = useCreateUser();
+
+  const rolesOptions = React.useMemo(() => {
+    return roles?.map<Option>((role) => ({
+      label: role.name,
+      value: role.id,
+      disable: false,
+    }));
+  }, [roles]);
 
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
@@ -85,12 +95,12 @@ const CreateUserForm = () => {
       roleIds: formData.roles.map((role) => role.value),
     };
 
-    createUser(request);
-
-    if (isCreateUserSuccess) {
-      toast.success("User has been successfully created!");
-      closeSheet();
-    }
+    createUser(request, {
+      onSuccess: () => {
+        toast.success("User has been successfully created!");
+        closeSheet();
+      },
+    });
   };
 
   if (isRolesOptionsPending) {

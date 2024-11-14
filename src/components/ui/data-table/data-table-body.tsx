@@ -1,6 +1,5 @@
-import { flexRender, Table } from "@tanstack/react-table";
-import { memo } from "react";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { flexRender, Table } from "@tanstack/react-table";
 
 interface DataTableBodyProps<TData> {
   table: Table<TData>;
@@ -13,7 +12,10 @@ export const DataTableBody = <TData,>({ table }: DataTableBodyProps<TData>) => {
         table.getRowModel().rows.map((row) => (
           <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
             {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id} style={{ width: `calc(var(--col-${cell.column.id}-size) * 1px)` }}>
+              <TableCell
+                key={cell.id}
+                style={{ width: cell.column.getSize() === Number.MAX_SAFE_INTEGER ? "auto" : cell.column.getSize() }}
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </TableCell>
             ))}
@@ -29,8 +31,3 @@ export const DataTableBody = <TData,>({ table }: DataTableBodyProps<TData>) => {
     </TableBody>
   );
 };
-
-export const MemorizedDataTableBody = memo(
-  DataTableBody,
-  (prev, next) => prev.table.options.data === next.table.options.data,
-) as typeof DataTableBody;

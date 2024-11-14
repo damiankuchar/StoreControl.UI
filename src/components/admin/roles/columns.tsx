@@ -1,10 +1,10 @@
 import { DataTableCellCheckbox, DataTableHeaderCheckbox } from "@/components/ui/data-table/data-table-checkbox";
 import DataTableColumnHeader from "@/components/ui/data-table/data-table-column-header";
-import { UserDto } from "@/models/user-models";
+import { RoleDto } from "@/models/role-models";
 import { ColumnDef } from "@tanstack/react-table";
-import ColumnsActions from "./columns-actions";
+import ColumnActions from "./column-actions";
 
-export const columns: ColumnDef<UserDto>[] = [
+export const columns: ColumnDef<RoleDto>[] = [
   {
     id: "select",
     header: ({ table }) => <DataTableHeaderCheckbox table={table} />,
@@ -23,28 +23,12 @@ export const columns: ColumnDef<UserDto>[] = [
     size: 70,
   },
   {
-    accessorKey: "username",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Username" />,
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
-  },
-  {
-    accessorKey: "firstName",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="First Name" />,
-  },
-  {
-    accessorKey: "lastName",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Last Name" />,
-  },
-  {
-    accessorKey: "registrationDate",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Registration Date" />,
+    accessorKey: "name",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
   },
   {
     id: "actions",
-    cell: ({ row }) => <ColumnsActions row={row} />,
+    cell: ({ row }) => <ColumnActions row={row} />,
     enableResizing: false,
     size: 150,
   },

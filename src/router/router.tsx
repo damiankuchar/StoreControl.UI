@@ -5,6 +5,7 @@ import ProtectedRoute from "./protected-route";
 import LoginPage from "@/pages/login-page";
 import globalRouter from "./global-router";
 import UsersPage from "@/pages/users-page";
+import RolesPage from "@/pages/roles-page";
 
 const Router = () => {
   const navigate = useNavigate();
@@ -24,6 +25,10 @@ const Router = () => {
 
       <Route element={<ProtectedRoute />}>
         <Route path="admin/users" element={<UsersPage />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="admin/roles" element={<RolesPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

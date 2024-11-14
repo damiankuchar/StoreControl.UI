@@ -1,4 +1,4 @@
-import DataTable from "@/components/ui/data-table/data-table";
+import { RoleDto } from "@/models/role-models";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -9,30 +9,26 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { columns } from "./columns";
+import DataTable from "@/components/ui/data-table/data-table";
 import DataTableToolbar from "@/components/ui/data-table/data-table-toolbar";
-import UsersDataTableToolbar from "./users-data-table-toolbar";
-import UsersSheet from "./users-sheet";
-import { UserDto } from "@/models/user-models";
-import { useUsers } from "@/hooks/queries/user-queries";
-import { useUserStore } from "@/stores/user-store";
+import { useRoles } from "@/hooks/queries/role-queries";
 import DeleteDialog from "@/components/common/delete-dialog";
-import { useDeleteUser } from "@/hooks/mutations/user-mutations";
+import { useRoleStore } from "@/stores/role-store";
+import { useDeleteRole } from "@/hooks/mutations/role-mutations";
 import { toast } from "sonner";
 
-const fallbackData: UserDto[] = [];
+const fallbackData: RoleDto[] = [];
 
-const UsersDataTable = () => {
-  const isSheetOpen = useUserStore((state) => state.isSheetOpen);
-  const isDialogOpen = useUserStore((state) => state.isDialogOpen);
-  const userId = useUserStore((state) => state.userId);
-  const closeSheet = useUserStore((state) => state.closeSheet);
-  const closeDialog = useUserStore((state) => state.closeDialog);
+const RolesDataTable = () => {
+  const roleId = useRoleStore((state) => state.roleId);
+  const isDialogOpen = useRoleStore((state) => state.isDeleteDialogOpen);
+  const closeDialog = useRoleStore((state) => state.closeDeleteDialog);
 
-  const { mutate: deleteUser, isPending } = useDeleteUser();
+  const { mutate: deleteRole, isPending } = useDeleteRole();
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const { data } = useUsers();
+  const { data } = useRoles();
 
   const table = useReactTable({
     data: data ?? fallbackData,
@@ -54,9 +50,9 @@ const UsersDataTable = () => {
   });
 
   const dialogDeleteFn = () => {
-    deleteUser(userId, {
+    deleteRole(roleId, {
       onSuccess: () => {
-        toast.success("User has been successfully deleted!");
+        toast.success("Role has been successfully deleted!");
         closeDialog();
       },
     });
@@ -66,10 +62,9 @@ const UsersDataTable = () => {
     <>
       <DataTable table={table}>
         <DataTableToolbar table={table} exporting={true}>
-          <UsersDataTableToolbar />
+          {/* <UsersDataTableToolbar /> */}
         </DataTableToolbar>
       </DataTable>
-      <UsersSheet open={isSheetOpen} onOpenChange={closeSheet} />
       <DeleteDialog
         open={isDialogOpen}
         onOpenChange={closeDialog}
@@ -82,4 +77,4 @@ const UsersDataTable = () => {
   );
 };
 
-export default UsersDataTable;
+export default RolesDataTable;

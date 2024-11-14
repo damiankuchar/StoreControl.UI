@@ -5,7 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import MultipleSelector from "@/components/ui/multiple-selector";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUpdateUser } from "@/hooks/mutations/user-mutations";
-import { useRolesOptions } from "@/hooks/queries/role-queries";
+import { useRoles } from "@/hooks/queries/role-queries";
 import { useUserById } from "@/hooks/queries/user-queries";
 import { UpdateUserRequest } from "@/models/user-models";
 import { useUserStore } from "@/stores/user-store";
@@ -13,6 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Option } from "@/components/ui/multiple-selector";
+import React from "react";
 
 const roleOptionSchema = z.object({
   label: z.string(),
@@ -31,32 +33,53 @@ const UpdateUserForm = () => {
   const closeSheet = useUserStore((state) => state.closeSheet);
 
   const { data: userData } = useUserById(userId);
-  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: rolesOptions } = useRolesOptions();
+  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: roles } = useRoles();
 
-  const { mutate: updateUser, isPending: isUpdateUserPending, isSuccess: isUpdateUserSuccess } = useUpdateUser();
+  const { mutate: updateUser, isPending: isUpdateUserPending } = useUpdateUser();
+
+  const rolesOptions = React.useMemo(() => {
+    return roles?.map<Option>((role) => ({
+      label: role.name,
+      value: role.id,
+      disable: false,
+    }));
+  }, [roles]);
 
   const form = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      roles: userData?.roles.map((role) => ({
-        value: role.id,
-        label: role.name,
-        disable: false,
-      })),
+      roles: [],
     },
   });
+
+  const { reset } = form;
+
+  React.useEffect(() => {
+    if (userData) {
+      reset({
+        roles: userData.roles.map((role) => ({
+          value: role.id,
+          label: role.name,
+          disable: false,
+        })),
+      });
+    }
+  }, [reset, userData]);
 
   const onSubmit = (formData: UpdateUserFormData) => {
     const request: UpdateUserRequest = {
       roleIds: formData.roles.map((role) => role.value),
     };
 
-    updateUser({ id: userId, data: request });
-
-    if (isUpdateUserSuccess) {
-      toast.success("User has been successfully updated!");
-      closeSheet();
-    }
+    updateUser(
+      { id: userId, data: request },
+      {
+        onSuccess: () => {
+          toast.success("User has been successfully updated!");
+          closeSheet();
+        },
+      },
+    );
   };
 
   if (isRolesOptionsPending) {

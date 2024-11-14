@@ -1,7 +1,4 @@
-export interface RoleDto {
-  id: string;
-  name: string;
-}
+import { RoleDto } from "./role-models";
 
 export interface CreateUserRequest {
   username: string;
