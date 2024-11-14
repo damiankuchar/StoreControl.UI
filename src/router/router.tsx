@@ -6,6 +6,7 @@ import LoginPage from "@/pages/login-page";
 import globalRouter from "./global-router";
 import UsersPage from "@/pages/users-page";
 import RolesPage from "@/pages/roles-page";
+import RoleUpdatePage from "@/pages/role-update-page";
 
 const Router = () => {
   const navigate = useNavigate();
@@ -29,6 +30,10 @@ const Router = () => {
 
       <Route element={<ProtectedRoute />}>
         <Route path="admin/roles" element={<RolesPage />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="admin/update-role/:roleId" element={<RoleUpdatePage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

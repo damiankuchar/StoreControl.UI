@@ -3,10 +3,10 @@ import { create } from "zustand";
 type SheetFormType = "create" | "update" | "view";
 
 interface UserStore {
+  userId: string;
+  formType: SheetFormType | null;
   isSheetOpen: boolean;
   isDialogOpen: boolean;
-  formType: SheetFormType | null;
-  userId: string;
 
   openSheet: (formType: SheetFormType, userId?: string) => void;
   closeSheet: () => void;
@@ -15,10 +15,10 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>()((set) => ({
+  userId: "",
+  formType: null,
   isSheetOpen: false,
   isDialogOpen: false,
-  formType: null,
-  userId: "",
 
   openSheet: (formType, userId) => set(() => ({ isSheetOpen: true, formType: formType, userId: userId })),
   closeSheet: () => set(() => ({ isSheetOpen: false, formType: null, userId: "" })),

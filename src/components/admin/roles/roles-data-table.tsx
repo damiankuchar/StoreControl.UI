@@ -16,13 +16,17 @@ import DeleteDialog from "@/components/common/delete-dialog";
 import { useRoleStore } from "@/stores/role-store";
 import { useDeleteRole } from "@/hooks/mutations/role-mutations";
 import { toast } from "sonner";
+import RolesDataTableToolbar from "./roles-data-table-toolbar";
+import CreateRoleDialog from "./create-role-dialog";
 
 const fallbackData: RoleDto[] = [];
 
 const RolesDataTable = () => {
   const roleId = useRoleStore((state) => state.roleId);
+  const isCreateDialogOpen = useRoleStore((state) => state.isCreateDialogOpen);
   const isDialogOpen = useRoleStore((state) => state.isDeleteDialogOpen);
-  const closeDialog = useRoleStore((state) => state.closeDeleteDialog);
+  const closeCreateDialog = useRoleStore((state) => state.closeCreateDialog);
+  const closeDeleteDialog = useRoleStore((state) => state.closeDeleteDialog);
 
   const { mutate: deleteRole, isPending } = useDeleteRole();
 
@@ -53,7 +57,7 @@ const RolesDataTable = () => {
     deleteRole(roleId, {
       onSuccess: () => {
         toast.success("Role has been successfully deleted!");
-        closeDialog();
+        closeDeleteDialog();
       },
     });
   };
@@ -62,12 +66,13 @@ const RolesDataTable = () => {
     <>
       <DataTable table={table}>
         <DataTableToolbar table={table} exporting={true}>
-          {/* <UsersDataTableToolbar /> */}
+          <RolesDataTableToolbar />
         </DataTableToolbar>
       </DataTable>
+      <CreateRoleDialog open={isCreateDialogOpen} onOpenChange={closeCreateDialog} />
       <DeleteDialog
         open={isDialogOpen}
-        onOpenChange={closeDialog}
+        onOpenChange={closeDeleteDialog}
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete user."
         deleteFn={dialogDeleteFn}

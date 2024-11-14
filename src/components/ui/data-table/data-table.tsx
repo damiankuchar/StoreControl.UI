@@ -6,9 +6,10 @@ import DataTablePagination from "./data-table-pagination";
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   table: TanstackTable<TData>;
+  pagination?: boolean;
 }
 
-const DataTable = <TData,>({ table, children, className, ...props }: DataTableProps<TData>) => {
+const DataTable = <TData,>({ table, pagination = true, children, className, ...props }: DataTableProps<TData>) => {
   return (
     <div className={cn("w-full space-y-2.5 overflow-auto", className)} {...props}>
       {children}
@@ -34,9 +35,11 @@ const DataTable = <TData,>({ table, children, className, ...props }: DataTablePr
           <DataTableBody table={table} />
         </Table>
       </div>
-      <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
-      </div>
+      {pagination ? (
+        <div className="flex flex-col gap-2.5">
+          <DataTablePagination table={table} />
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -22,7 +22,7 @@ export type LoginFormData = z.infer<typeof loginFormSchema>;
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const { mutate: login, isPending, isSuccess } = useLogin();
+  const { mutate: login, isPending } = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
@@ -33,12 +33,12 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (loginFormData: LoginFormData) => {
-    login(loginFormData);
-
-    if (isSuccess) {
-      toast.success("Successfully logged in!");
-      navigate("");
-    }
+    login(loginFormData, {
+      onSuccess: () => {
+        toast.success("Successfully logged in!");
+        navigate("");
+      },
+    });
   };
 
   return (

@@ -3,18 +3,17 @@ import FormSkeleton from "@/components/common/form-skeleton";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import MultipleSelector from "@/components/ui/multiple-selector";
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCreateUser } from "@/hooks/mutations/user-mutations";
 import { useRoles } from "@/hooks/queries/role-queries";
 import { CreateUserRequest } from "@/models/user-models";
 import { useUserStore } from "@/stores/user-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Option } from "@/components/ui/multiple-selector";
-import React from "react";
 
 const roleOptionSchema = z.object({
   label: z.string(),
@@ -84,7 +83,7 @@ const CreateUserForm = () => {
     },
   });
 
-  const onSubmit = async (formData: CreateUserFormData) => {
+  const onSubmit = (formData: CreateUserFormData) => {
     const request: CreateUserRequest = {
       username: formData.username,
       email: formData.email,
