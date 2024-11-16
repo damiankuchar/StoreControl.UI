@@ -10,7 +10,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   SortingState,
-  useReactTable
+  useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -27,14 +27,14 @@ const PermissionsDataTable = () => {
   const closeSheet = usePermissionStore((state) => state.closeSheet);
   const closeDeleteDialog = usePermissionStore((state) => state.closeDeleteDialog);
 
-  const { mutate: deletePermission, isPending } = useDeletePermission();
+  const { data: permissions } = usePermissions();
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const { data } = usePermissions();
+  const { mutate: deletePermission, isPending } = useDeletePermission();
 
   const table = useReactTable({
-    data: data ?? fallbackData,
+    data: permissions ?? fallbackData,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -64,7 +64,7 @@ const PermissionsDataTable = () => {
     <>
       <DataTable table={table} pagination={false}>
         <DataTableToolbar table={table} exporting={true}>
-          <PermissionDataTableToolbar />
+          <PermissionDataTableToolbar table={table} />
         </DataTableToolbar>
       </DataTable>
       <PermissionSheet open={isSheetOpen} onOpenChange={closeSheet} />

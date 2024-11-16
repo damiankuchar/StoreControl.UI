@@ -5,8 +5,9 @@ import { DownloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { toast } from "sonner";
+import { HTMLAttributes } from "react";
 
-interface DataTableToolbarProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableToolbarProps<TData> extends HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
   exporting?: boolean | null;
 }
