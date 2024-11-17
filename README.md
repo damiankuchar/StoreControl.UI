@@ -1,50 +1,47 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite - Frontend Application Template
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+This repository provides a customizable frontend application template designed to accelerate the development of new React-based projects. It aims to eliminate the tedious configuration steps and provide a starting point for building core features of your application. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+While some specific functionalities have been pre-implemented to demonstrate typical patterns (such as API configurations, backend queries, etc.), this may reduce the overall generic nature of the template. However, these implementations serve as practical examples and will allow you to quickly copy and paste them for future development, saving time on repetitive tasks like setting up API integrations, data fetching, and error handling.
 
-## Expanding the ESLint configuration
+The template comes with essential tools and libraries integrated to ensure a smooth and efficient development process, letting you focus on building your application rather than configuring foundational elements.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## ✨ Features
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Frameworks and Tools
+- **React.js with TypeScript**  
+- **Shadcn UI**  
+- **Tailwind CSS** 
+- **TanStack Query**  
+- **React Router**  
+- **Zustand**  
+- **Zod**  
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Key Features
+- **Pre-configured Routing:** Routing is already set up with React Router, making navigation across your application seamless.
+- **Error Handling:** Built-in error boundaries and global error handling to enhance the user experience and prevent crashes.
+- **State Management:** Zustand is configured to handle app-wide state in a clean and efficient way.
+- **Type Safety:** TypeScript ensures strong typing throughout the project, enhancing developer experience and reducing bugs.
+- **Data Fetching:** TanStack Query provides a robust mechanism for fetching, caching, and syncing data from APIs.
+- **UI Components:** Pre-configured UI components using Shadcn UI and Tailwind CSS for consistent styling and faster UI development.
+- **ESLint and Prettier Configuration:** Basic configurations for ESLint and Prettier are included, along with scripts in `package.json` to ensure consistent code quality and formatting across the project.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+## 🚀 Getting Started
+
+### Prerequisites
+1. **Node.js** (Recommended version: v18 or later)
+2. **npm** or **yarn** (Package managers)
+
+### Installation
+Clone the repository and install dependencies:
+```bash
+git clone <repository-url>
+cd <project-folder>
+npm install
+npm run local
 ```
