@@ -17,3 +17,9 @@ export interface CreateRoleRequest {
   description: string;
   permissionIds: string[];
 }
+
+export interface UpdateRoleRequest {
+  name: string;
+  description: string;
+  permissionIds: string[];
+}

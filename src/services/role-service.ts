@@ -1,4 +1,4 @@
-import { CreateRoleRequest, RoleDetailedDto, RoleDto } from "@/models/role-models";
+import { CreateRoleRequest, RoleDetailedDto, RoleDto, UpdateRoleRequest } from "@/models/role-models";
 import api from "@/utils/axios-instance";
 
 export const getAllRoles = async () => {
@@ -13,6 +13,11 @@ export const getRoleById = async (id: string) => {
 
 export const createRole = async (body: CreateRoleRequest) => {
   const response = await api.post<RoleDetailedDto>("roles", body);
+  return response.data;
+};
+
+export const updateRole = async (id: string, body: UpdateRoleRequest) => {
+  const response = await api.put<RoleDetailedDto>(`roles/${id}`, body);
   return response.data;
 };
 

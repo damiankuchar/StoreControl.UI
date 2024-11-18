@@ -1,23 +1,13 @@
-import { RoleDto } from "@/models/role-models";
-import {
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
-import { useState } from "react";
-import { columns } from "./columns";
-import DataTable from "@/components/ui/data-table/data-table";
-import DataTableToolbar from "@/components/ui/data-table/data-table-toolbar";
-import { useRoles } from "@/hooks/queries/role-queries";
 import DeleteDialog from "@/components/common/delete-dialog";
-import { useRoleStore } from "@/stores/role-store";
+import DataTable from "@/components/ui/data-table/data-table";
 import { useDeleteRole } from "@/hooks/mutations/role-mutations";
+import { useRoles } from "@/hooks/queries/role-queries";
+import { RoleDto } from "@/models/role-models";
+import { useRoleStore } from "@/stores/role-store";
 import { toast } from "sonner";
-import RolesDataTableToolbar from "./roles-data-table-toolbar";
+import { columns } from "./columns";
 import CreateRoleDialog from "./create-role-dialog";
+import RolesDataTableToolbar from "./roles-data-table-toolbar";
 
 const fallbackData: RoleDto[] = [];
 
@@ -30,28 +20,7 @@ const RolesDataTable = () => {
 
   const { mutate: deleteRole, isPending } = useDeleteRole();
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-
   const { data } = useRoles();
-
-  const table = useReactTable({
-    data: data ?? fallbackData,
-    columns: columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    columnResizeMode: "onChange",
-    state: {
-      sorting,
-    },
-    defaultColumn: {
-      minSize: 0,
-      size: Number.MAX_SAFE_INTEGER,
-      maxSize: Number.MAX_SAFE_INTEGER,
-    },
-  });
 
   const dialogDeleteFn = () => {
     deleteRole(roleId, {
@@ -64,10 +33,8 @@ const RolesDataTable = () => {
 
   return (
     <>
-      <DataTable table={table}>
-        <DataTableToolbar table={table} exporting={true}>
-          <RolesDataTableToolbar />
-        </DataTableToolbar>
+      <DataTable data={data ?? fallbackData} columns={columns}>
+        <RolesDataTableToolbar />
       </DataTable>
       <CreateRoleDialog open={isCreateDialogOpen} onOpenChange={closeCreateDialog} />
       <DeleteDialog
