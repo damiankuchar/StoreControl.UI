@@ -2,7 +2,7 @@ import { TooltipButton } from "@/components/ui/button";
 import { RoleDto } from "@/models/role-models";
 import { useRoleStore } from "@/stores/role-store";
 import { Row } from "@tanstack/react-table";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ColumnActionsProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,9 +15,6 @@ const ColumnActions = ({ row }: ColumnActionsProps) => {
 
   return (
     <div className="flex flex-row justify-center gap-1">
-      <TooltipButton tooltip="View user" className="rounded-full w-8 h-8" onClick={() => console.log()}>
-        <Eye className="w-4 h-4 text-info" />
-      </TooltipButton>
       <TooltipButton
         tooltip="Update user"
         className="rounded-full w-8 h-8"

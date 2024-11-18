@@ -8,9 +8,42 @@ import UsersPage from "@/pages/users-page";
 import RolesPage from "@/pages/roles-page";
 import RoleUpdatePage from "@/pages/role-update-page";
 
+interface RouteConfig {
+  path: string;
+  element: React.ReactNode;
+  permission?: string;
+  breadcrumbs?: string[];
+}
+
 const Router = () => {
   const navigate = useNavigate();
   globalRouter.navigate = navigate;
+
+  const routes: RouteConfig[] = [
+    {
+      path: "/",
+      element: <div>Home</div>,
+      permission: "",
+    },
+    {
+      path: "admin/users",
+      element: <UsersPage />,
+      permission: "",
+      breadcrumbs: ["Home", "Users"],
+    },
+    {
+      path: "admin/roles",
+      element: <RolesPage />,
+      permission: "",
+      breadcrumbs: ["Home", "Roles"],
+    },
+    {
+      path: "admin/update-role/:roleId",
+      element: <RoleUpdatePage />,
+      permission: "",
+      breadcrumbs: ["Home", "Roles", "Permission Manager"],
+    },
+  ];
 
   return (
     <Routes>
@@ -20,21 +53,11 @@ const Router = () => {
       </Route>
 
       {/* Protected routes with permission */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<div>Home</div>} />
-      </Route>
-
-      <Route element={<ProtectedRoute />}>
-        <Route path="admin/users" element={<UsersPage />} />
-      </Route>
-
-      <Route element={<ProtectedRoute />}>
-        <Route path="admin/roles" element={<RolesPage />} />
-      </Route>
-
-      <Route element={<ProtectedRoute />}>
-        <Route path="admin/update-role/:roleId" element={<RoleUpdatePage />} />
-      </Route>
+      {routes.map((route, index) => (
+        <Route key={index} element={<ProtectedRoute permission={route.permission} breadcrumbs={route.breadcrumbs} />}>
+          <Route path={route.path} element={route.element} />
+        </Route>
+      ))}
 
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

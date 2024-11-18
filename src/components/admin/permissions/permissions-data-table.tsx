@@ -14,6 +14,7 @@ import { columns } from "./columns";
 import PermissionDataTableToolbar from "./permissions-data-table-toolbar";
 import PermissionSheet from "./permissions-sheet";
 import { useUpdateRole } from "@/hooks/mutations/role-mutations";
+import ErrorAlert from "@/components/common/error-alert";
 
 interface PermissionsDataTableProps {
   roleName: string;
@@ -34,9 +35,9 @@ const PermissionsDataTable = ({ roleName }: PermissionsDataTableProps) => {
   const [rowSelectionState, setRowSelectionState] = useState<RowSelectionState>({});
 
   const { roleId } = useParams();
-  const { data: role, isPending: isGetRolePending, isError: isGetRoleError } = useRoleById(roleId ?? "");
+  const { data: role, isError: isGetRoleError } = useRoleById(roleId ?? "");
 
-  const { data: permissions, isPending: isGetPermissionsPending, isError: isGetPermissionsError } = usePermissions();
+  const { data: permissions, isError: isGetPermissionsError } = usePermissions();
 
   const { mutate: updateRole, isPending: isUpdateRolePending } = useUpdateRole();
   const { mutate: deletePermission, isPending: isDeletePermissionPending } = useDeletePermission();
@@ -86,19 +87,20 @@ const PermissionsDataTable = ({ roleName }: PermissionsDataTableProps) => {
     );
   };
 
-  if (isGetPermissionsPending || isGetRolePending) {
-    return <div>Pending...</div>;
-  }
-
   if (isGetPermissionsError || isGetRoleError) {
-    return <div>Error</div>;
+    return (
+      <ErrorAlert
+        title="Permission Table Unavailable"
+        description="Unable to load permission table. Please refresh or try again."
+      />
+    );
   }
 
   return (
     <>
       <DataTable
         columns={columns}
-        data={permissions}
+        data={permissions ?? []}
         pagination={true}
         rowSelectionState={rowSelectionState}
         onRowSelectionChange={setRowSelectionState}

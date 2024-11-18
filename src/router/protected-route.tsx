@@ -5,9 +5,10 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
   permission?: string;
+  breadcrumbs?: string[];
 }
 
-const ProtectedRoute = ({ permission }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ breadcrumbs: breadcrumbs, permission }: ProtectedRouteProps) => {
   const location = useLocation();
   const isAuth = useAuthStore((state) => state.isAuth);
   const hasPermission = useAuthStore((state) => state.hasPermission);
@@ -21,7 +22,7 @@ const ProtectedRoute = ({ permission }: ProtectedRouteProps) => {
   }
 
   return (
-    <Layout>
+    <Layout breadcrumbs={breadcrumbs}>
       <Outlet />
     </Layout>
   );
