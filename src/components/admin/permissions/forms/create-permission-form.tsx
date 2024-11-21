@@ -13,6 +13,7 @@ const createPermissionSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
+  description: z.string(),
 });
 
 type CreatePermissionFormData = z.infer<typeof createPermissionSchema>;
@@ -26,12 +27,14 @@ const CreatePermissionForm = () => {
     resolver: zodResolver(createPermissionSchema),
     defaultValues: {
       name: "",
+      description: "",
     },
   });
 
   const onSubmit = (formData: CreatePermissionFormData) => {
     const request: CreatePermissionRequest = {
       name: formData.name,
+      description: formData.description,
     };
 
     createPermission(request, {
@@ -53,6 +56,19 @@ const CreatePermissionForm = () => {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input placeholder="Description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

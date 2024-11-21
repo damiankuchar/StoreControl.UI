@@ -9,7 +9,7 @@ interface AuthStore {
   refreshToken: string | null;
   tokenData: TokenData | null;
   isAuth: () => boolean;
-  hasPermission: (permission: string) => boolean;
+  hasPermissions: (permissions: string[] | undefined) => boolean;
   isTokenExpired: () => boolean;
   setTokens: (token: string, refreshToken: string) => void;
   clearTokens: () => void;
@@ -26,14 +26,18 @@ export const useAuthStore = create<AuthStore>()(
         return !!get().token;
       },
 
-      hasPermission: (permission) => {
+      hasPermissions: (permissions) => {
         const tokenData = get().tokenData;
 
         if (!tokenData) {
           return false;
         }
 
-        return tokenData.permissions?.includes(permission);
+        if (!permissions) {
+          return false;
+        }
+
+        return permissions.every((permission) => tokenData.permissions?.includes(permission));
       },
 
       isTokenExpired: () => {

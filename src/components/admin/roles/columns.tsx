@@ -16,6 +16,11 @@ export const columns: ColumnDef<RoleDto>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    size: 300,
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
   },
   {
     id: "actions",

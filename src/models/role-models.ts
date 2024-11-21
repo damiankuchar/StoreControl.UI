@@ -3,6 +3,7 @@ import { PermissionDto } from "./permission-models";
 export interface RoleDto {
   id: string;
   name: string;
+  description: string;
 }
 
 export interface RoleDetailedDto {

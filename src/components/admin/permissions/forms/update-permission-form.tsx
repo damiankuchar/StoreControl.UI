@@ -15,6 +15,7 @@ const updatePermissionSchema = z.object({
   name: z.string().min(1, {
     message: "Name is required",
   }),
+  description: z.string(),
 });
 
 type UpdatePermissionFormData = z.infer<typeof updatePermissionSchema>;
@@ -30,6 +31,7 @@ const UpdatePermissionForm = () => {
     resolver: zodResolver(updatePermissionSchema),
     defaultValues: {
       name: "",
+      description: "",
     },
   });
 
@@ -39,6 +41,7 @@ const UpdatePermissionForm = () => {
     if (existingPermission) {
       reset({
         name: existingPermission.name,
+        description: existingPermission.description,
       });
     }
   }, [reset, existingPermission]);
@@ -46,6 +49,7 @@ const UpdatePermissionForm = () => {
   const onSubmit = (formData: UpdatePermissionFormData) => {
     const request: UpdatePermissionRequest = {
       name: formData.name,
+      description: formData.description,
     };
 
     updatePermission(
@@ -70,6 +74,19 @@ const UpdatePermissionForm = () => {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input placeholder="Description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

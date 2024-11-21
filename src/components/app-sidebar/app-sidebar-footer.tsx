@@ -74,7 +74,7 @@ const AppSidebarFooter = () => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleLogout()}>
+              <DropdownMenuItem className="cursor-pointer" onClick={() => handleLogout()}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>

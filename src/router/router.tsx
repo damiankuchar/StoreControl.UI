@@ -7,11 +7,12 @@ import globalRouter from "./global-router";
 import UsersPage from "@/pages/users-page";
 import RolesPage from "@/pages/roles-page";
 import RoleUpdatePage from "@/pages/role-update-page";
+import { Read_All_Permissions, Read_All_Roles, Read_All_Users } from "@/lib/permissions";
 
 interface RouteConfig {
   path: string;
   element: React.ReactNode;
-  permission?: string;
+  permissions?: string[];
   breadcrumbs?: string[];
 }
 
@@ -23,24 +24,24 @@ const Router = () => {
     {
       path: "/",
       element: <div>Home</div>,
-      permission: "",
+      permissions: [],
     },
     {
       path: "admin/users",
       element: <UsersPage />,
-      permission: "",
+      permissions: [Read_All_Users],
       breadcrumbs: ["Home", "Users"],
     },
     {
       path: "admin/roles",
       element: <RolesPage />,
-      permission: "",
+      permissions: [Read_All_Roles],
       breadcrumbs: ["Home", "Roles"],
     },
     {
       path: "admin/update-role/:roleId",
       element: <RoleUpdatePage />,
-      permission: "",
+      permissions: [Read_All_Permissions],
       breadcrumbs: ["Home", "Roles", "Permission Manager"],
     },
   ];
@@ -54,7 +55,7 @@ const Router = () => {
 
       {/* Protected routes with permission */}
       {routes.map((route, index) => (
-        <Route key={index} element={<ProtectedRoute permission={route.permission} breadcrumbs={route.breadcrumbs} />}>
+        <Route key={index} element={<ProtectedRoute permissions={route.permissions} breadcrumbs={route.breadcrumbs} />}>
           <Route path={route.path} element={route.element} />
         </Route>
       ))}

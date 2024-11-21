@@ -4,20 +4,20 @@ import { useAuthStore } from "@/stores/auth-store";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  permission?: string;
+  permissions?: string[];
   breadcrumbs?: string[];
 }
 
-const ProtectedRoute = ({ breadcrumbs: breadcrumbs, permission }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ breadcrumbs: breadcrumbs, permissions }: ProtectedRouteProps) => {
   const location = useLocation();
   const isAuth = useAuthStore((state) => state.isAuth);
-  const hasPermission = useAuthStore((state) => state.hasPermission);
+  const hasPermissions = useAuthStore((state) => state.hasPermissions);
 
   if (!isAuth()) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (permission && !hasPermission(permission)) {
+  if (!hasPermissions(permissions)) {
     return <AccessDeniedPage />;
   }
 

@@ -5,6 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/stores/auth-store";
 import { LucideProps, MoreHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -12,6 +13,7 @@ interface DropdownNavItem {
   title: string;
   url: string;
   icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
+  permissions?: string[];
 }
 
 export interface DropdownNavGroup {
@@ -19,6 +21,7 @@ export interface DropdownNavGroup {
   title: string;
   url: string;
   icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
+  permissions?: string[];
   dropdownItems: DropdownNavItem[];
 }
 
@@ -27,6 +30,12 @@ interface SidebarDropdownItemProps {
 }
 
 const SidebarDropdownItem = ({ item }: SidebarDropdownItemProps) => {
+  const hasPermissions = useAuthStore((state) => state.hasPermissions);
+
+  if (!hasPermissions(item.permissions)) {
+    return null;
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem key={item.title}>
@@ -44,14 +53,20 @@ const SidebarDropdownItem = ({ item }: SidebarDropdownItemProps) => {
             </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48 rounded-lg" side="bottom" align="end">
-            {item.dropdownItems.map((dropdownItem) => (
-              <DropdownMenuItem key={dropdownItem.title}>
-                <span className="text-muted-foreground">
-                  <dropdownItem.icon />
-                </span>
-                <span>{dropdownItem.title}</span>
-              </DropdownMenuItem>
-            ))}
+            {item.dropdownItems.map((dropdownItem) => {
+              if (!hasPermissions(dropdownItem.permissions)) {
+                return null;
+              }
+
+              return (
+                <DropdownMenuItem key={dropdownItem.title}>
+                  <span className="text-muted-foreground">
+                    <dropdownItem.icon />
+                  </span>
+                  <span>{dropdownItem.title}</span>
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

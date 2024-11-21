@@ -18,9 +18,10 @@ import ErrorAlert from "@/components/common/error-alert";
 
 interface PermissionsDataTableProps {
   roleName: string;
+  roleDescription: string;
 }
 
-const PermissionsDataTable = ({ roleName }: PermissionsDataTableProps) => {
+const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTableProps) => {
   const [permissionId, isSheetOpen, isDeleteDialogOpen, closeSheet, closeDeleteDialog] = usePermissionStore(
     useShallow((state) => [
       state.permissionId,
@@ -73,7 +74,7 @@ const PermissionsDataTable = ({ roleName }: PermissionsDataTableProps) => {
 
     const request: UpdateRoleRequest = {
       name: roleName,
-      description: role.description,
+      description: roleDescription,
       permissionIds: Object.keys(rowSelectionState),
     };
 

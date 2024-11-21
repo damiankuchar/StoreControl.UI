@@ -7,12 +7,14 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/stores/auth-store";
 import { ChevronRight, Dot, LucideProps } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface CollapsibleNavItem {
   title: string;
   url: string;
+  permissions?: string[];
 }
 
 export interface CollapsibleNavGroup {
@@ -20,6 +22,7 @@ export interface CollapsibleNavGroup {
   title: string;
   icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
   isActive: boolean;
+  permissions?: string[];
   items: CollapsibleNavItem[];
 }
 
@@ -28,6 +31,12 @@ interface SidebarCollapsibleItemProps {
 }
 
 const SidebarCollapsibleItem = ({ item }: SidebarCollapsibleItemProps) => {
+  const hasPermissions = useAuthStore((state) => state.hasPermissions);
+
+  if (!hasPermissions(item.permissions)) {
+    return null;
+  }
+
   return (
     <SidebarMenu>
       <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
@@ -41,16 +50,22 @@ const SidebarCollapsibleItem = ({ item }: SidebarCollapsibleItemProps) => {
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
-              {item.items?.map((subItem) => (
-                <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton asChild>
-                    <Link to={subItem.url}>
-                      <Dot />
-                      <span>{subItem.title}</span>
-                    </Link>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              ))}
+              {item.items?.map((subItem) => {
+                if (!hasPermissions(subItem.permissions)) {
+                  return null;
+                }
+
+                return (
+                  <SidebarMenuSubItem key={subItem.title}>
+                    <SidebarMenuSubButton asChild>
+                      <Link to={subItem.url}>
+                        <Dot />
+                        <span>{subItem.title}</span>
+                      </Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                );
+              })}
             </SidebarMenuSub>
           </CollapsibleContent>
         </SidebarMenuItem>

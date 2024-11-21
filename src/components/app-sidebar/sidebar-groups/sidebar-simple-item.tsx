@@ -1,4 +1,5 @@
 import { SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/stores/auth-store";
 import { LucideProps } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -7,6 +8,7 @@ export interface SimpleNavGroup {
   title: string;
   url: string;
   icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
+  permissions?: string[];
 }
 
 interface SidebarSimpleItemProps {
@@ -14,6 +16,12 @@ interface SidebarSimpleItemProps {
 }
 
 const SidebarSimpleItem = ({ item }: SidebarSimpleItemProps) => {
+  const hasPermissions = useAuthStore((state) => state.hasPermissions);
+
+  if (!hasPermissions(item.permissions)) {
+    return null;
+  }
+
   return (
     <SidebarGroupContent>
       <SidebarMenu>
