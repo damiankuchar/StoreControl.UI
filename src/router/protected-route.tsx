@@ -4,11 +4,12 @@ import { useAuthStore } from "@/stores/auth-store";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
+  header?: React.ReactNode;
   permissions?: string[];
   breadcrumbs?: string[];
 }
 
-const ProtectedRoute = ({ breadcrumbs: breadcrumbs, permissions }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ header, breadcrumbs, permissions }: ProtectedRouteProps) => {
   const location = useLocation();
   const isAuth = useAuthStore((state) => state.isAuth);
   const hasPermissions = useAuthStore((state) => state.hasPermissions);
@@ -22,7 +23,7 @@ const ProtectedRoute = ({ breadcrumbs: breadcrumbs, permissions }: ProtectedRout
   }
 
   return (
-    <Layout breadcrumbs={breadcrumbs}>
+    <Layout header={header} breadcrumbs={breadcrumbs}>
       <Outlet />
     </Layout>
   );

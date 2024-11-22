@@ -8,10 +8,13 @@ import UsersPage from "@/pages/users-page";
 import RolesPage from "@/pages/roles-page";
 import RoleUpdatePage from "@/pages/role-update-page";
 import { Read_All_Permissions, Read_All_Roles, Read_All_Users } from "@/lib/permissions";
+import HomePage from "@/pages/home-page";
+import CanvasHeader from "@/components/header/canvas-header";
 
 interface RouteConfig {
   path: string;
   element: React.ReactNode;
+  header?: React.ReactNode;
   permissions?: string[];
   breadcrumbs?: string[];
 }
@@ -23,7 +26,8 @@ const Router = () => {
   const routes: RouteConfig[] = [
     {
       path: "/",
-      element: <div>Home</div>,
+      element: <HomePage />,
+      header: <CanvasHeader />,
       permissions: [],
     },
     {
@@ -55,7 +59,7 @@ const Router = () => {
 
       {/* Protected routes with permission */}
       {routes.map((route, index) => (
-        <Route key={index} element={<ProtectedRoute permissions={route.permissions} breadcrumbs={route.breadcrumbs} />}>
+        <Route key={index} element={<ProtectedRoute header={route.header} permissions={route.permissions} breadcrumbs={route.breadcrumbs} />}>
           <Route path={route.path} element={route.element} />
         </Route>
       ))}

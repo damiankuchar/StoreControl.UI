@@ -1,4 +1,4 @@
-import { Users } from "lucide-react";
+import { Home, Users } from "lucide-react";
 import { CollapsibleNavGroup } from "./sidebar-groups/sidebar-collapsible-item";
 import { DropdownNavGroup } from "./sidebar-groups/sidebar-dropdown-item";
 import { SimpleNavGroup } from "./sidebar-groups/sidebar-simple-item";
@@ -7,6 +7,13 @@ import { Read_All_Permissions, Read_All_Roles, Read_All_Users } from "@/lib/perm
 export type NavGroup = SimpleNavGroup | DropdownNavGroup | CollapsibleNavGroup;
 
 export const sidebarData: NavGroup[] = [
+  {
+    type: "simple",
+    title: "Home",
+    url: "/",
+    icon: Home,
+    permissions: [],
+  },
   {
     type: "collapsible",
     title: "Users",
