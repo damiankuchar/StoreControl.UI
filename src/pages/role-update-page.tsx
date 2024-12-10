@@ -9,19 +9,19 @@ import { useParams } from "react-router-dom";
 
 const RoleUpdatePage = () => {
   const { roleId } = useParams();
-  const { data: role, isPending, isError } = useRoleById(roleId ?? "");
+  const rolesQuery = useRoleById(roleId ?? "");
 
   const [roleName, setRoleName] = useState("");
   const [roleDescription, setRoleDescription] = useState("");
 
   useEffect(() => {
-    if (role) {
-      setRoleName(role.name);
-      setRoleDescription(role.description);
+    if (rolesQuery.data) {
+      setRoleName(rolesQuery.data.name);
+      setRoleDescription(rolesQuery.data.description);
     }
-  }, [role]);
+  }, [rolesQuery.data]);
 
-  if (isPending) {
+  if (rolesQuery.isPending) {
     return (
       <div className="flex-1 flex flex-col justify-center items-center">
         <Spinner />
@@ -29,13 +29,15 @@ const RoleUpdatePage = () => {
     );
   }
 
-  if (isError)
+  if (rolesQuery.isError)
     return (
       <ErrorAlert
         title="Role Permission Unavailable"
         description="Unable to load permissions info. Please refresh or try again."
       />
     );
+
+  const role = rolesQuery.data;
 
   return (
     <div>

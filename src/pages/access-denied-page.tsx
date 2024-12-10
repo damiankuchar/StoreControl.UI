@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const AccessDeniedPage = () => {
   const navigate = useNavigate();
+
   return (
     <div className="h-svh">
       <div className="m-auto flex h-full w-full flex-col items-center justify-center gap-2">

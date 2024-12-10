@@ -1,9 +1,9 @@
-import ModeToggle from "../mode-toggle/mode-toggle";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import CommandMenu from "../common/command-menu";
 import { useCanvasStore } from "@/stores/canvas-store";
+import ModeToggle from "../ui/mode-toggle";
 
 const CanvasHeader = () => {
   const selectedProductionLine = useCanvasStore((state) => state.selectedProductionLine);

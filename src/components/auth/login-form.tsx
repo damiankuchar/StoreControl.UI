@@ -22,7 +22,7 @@ export type LoginFormData = z.infer<typeof loginFormSchema>;
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const { mutate: login, isPending } = useLogin();
+  const loginMutation = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
@@ -33,7 +33,7 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (loginFormData: LoginFormData) => {
-    login(loginFormData, {
+    loginMutation.mutate(loginFormData, {
       onSuccess: () => {
         toast.success("Successfully logged in!");
         navigate("");
@@ -84,7 +84,7 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" loading={isPending}>
+            <Button type="submit" className="w-full" loading={loginMutation.isPending}>
               Login
             </Button>
           </form>

@@ -10,21 +10,21 @@ import React from "react";
 const ViewUserForm = () => {
   const userId = useUserStore((state) => state.userId);
 
-  const { isPending, isError, data } = useUserById(userId);
+  const userQuery = useUserById(userId);
 
   const userRolesOptions = React.useMemo(() => {
-    return data?.roles.map<Option>((role) => ({
+    return userQuery.data?.roles.map<Option>((role) => ({
       value: role.id,
       label: role.name,
       disable: false,
     }));
-  }, [data]);
+  }, [userQuery.data]);
 
-  if (isPending) {
+  if (userQuery.isPending) {
     return <FormSkeleton count={5} />;
   }
 
-  if (isError) {
+  if (userQuery.isError) {
     return (
       <ErrorAlert
         title="User Data Unavailable"
@@ -37,19 +37,19 @@ const ViewUserForm = () => {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Username</Label>
-        <Input placeholder="Username" value={data.username} readOnly={true} />
+        <Input placeholder="Username" value={userQuery.data.username} readOnly={true} />
       </div>
       <div className="space-y-2">
         <Label>Email</Label>
-        <Input placeholder="Email" value={data.email} readOnly={true} />
+        <Input placeholder="Email" value={userQuery.data.email} readOnly={true} />
       </div>
       <div className="space-y-2">
         <Label>First name</Label>
-        <Input placeholder="First name" value={data.firstName} readOnly={true} />
+        <Input placeholder="First name" value={userQuery.data.firstName} readOnly={true} />
       </div>
       <div className="space-y-2">
         <Label>Last name</Label>
-        <Input placeholder="Last name" value={data.lastName} readOnly={true} />
+        <Input placeholder="Last name" value={userQuery.data.lastName} readOnly={true} />
       </div>
       <div className="space-y-2">
         <Label>Roles</Label>

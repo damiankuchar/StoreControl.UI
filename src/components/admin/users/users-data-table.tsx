@@ -15,12 +15,11 @@ const UsersDataTable = () => {
   const closeSheet = useUserStore((state) => state.closeSheet);
   const closeDialog = useUserStore((state) => state.closeDialog);
 
-  const { mutate: deleteUser, isPending } = useDeleteUser();
-
-  const { data } = useUsers();
+  const usersQuery = useUsers();
+  const deleteUserMutation = useDeleteUser();
 
   const dialogDeleteFn = () => {
-    deleteUser(userId, {
+    deleteUserMutation.mutate(userId, {
       onSuccess: () => {
         toast.success("User has been successfully deleted!");
         closeDialog();
@@ -30,7 +29,7 @@ const UsersDataTable = () => {
 
   return (
     <>
-      <DataTable columns={columns} data={data ?? []}>
+      <DataTable columns={columns} data={usersQuery.data ?? []}>
         <UsersDataTableToolbar />
       </DataTable>
       <UsersSheet open={isSheetOpen} onOpenChange={closeSheet} />
@@ -40,7 +39,7 @@ const UsersDataTable = () => {
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete user."
         deleteFn={dialogDeleteFn}
-        loading={isPending}
+        loading={deleteUserMutation.isPending}
       />
     </>
   );

@@ -58,17 +58,16 @@ type CreateUserFormData = z.infer<typeof createUserSchema>;
 const CreateUserForm = () => {
   const closeSheet = useUserStore((state) => state.closeSheet);
 
-  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: roles } = useRoles();
-
-  const { mutate: createUser, isPending: isCreateUserPending } = useCreateUser();
+  const rolesQuery = useRoles();
+  const createUserMutation = useCreateUser();
 
   const rolesOptions = React.useMemo(() => {
-    return roles?.map<Option>((role) => ({
+    return rolesQuery.data?.map<Option>((role) => ({
       label: role.name,
       value: role.id,
       disable: false,
     }));
-  }, [roles]);
+  }, [rolesQuery.data]);
 
   const form = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
@@ -94,7 +93,7 @@ const CreateUserForm = () => {
       roleIds: formData.roles.map((role) => role.value),
     };
 
-    createUser(request, {
+    createUserMutation.mutate(request, {
       onSuccess: () => {
         toast.success("User has been successfully created!");
         closeSheet();
@@ -102,11 +101,11 @@ const CreateUserForm = () => {
     });
   };
 
-  if (isRolesOptionsPending) {
+  if (rolesQuery.isPending) {
     return <FormSkeleton count={7} />;
   }
 
-  if (isRolesOptionsError) {
+  if (rolesQuery.isError) {
     return (
       <ErrorAlert
         title="Create Action Unavailable"
@@ -203,7 +202,7 @@ const CreateUserForm = () => {
             <FormItem>
               <FormLabel>Roles</FormLabel>
               <FormControl>
-                {isRolesOptionsPending ? (
+                {rolesQuery.isPending ? (
                   <Skeleton className="h-9" />
                 ) : (
                   <MultipleSelector
@@ -217,7 +216,7 @@ const CreateUserForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" loading={isCreateUserPending}>
+        <Button type="submit" size="sm" loading={createUserMutation.isPending}>
           Create user
         </Button>
       </form>

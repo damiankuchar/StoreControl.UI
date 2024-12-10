@@ -16,7 +16,6 @@ interface RouteConfig {
   element: React.ReactNode;
   header?: React.ReactNode;
   permissions?: string[];
-  breadcrumbs?: string[];
 }
 
 const Router = () => {
@@ -34,19 +33,16 @@ const Router = () => {
       path: "admin/users",
       element: <UsersPage />,
       permissions: [Read_All_Users],
-      breadcrumbs: ["Home", "Users"],
     },
     {
       path: "admin/roles",
       element: <RolesPage />,
       permissions: [Read_All_Roles],
-      breadcrumbs: ["Home", "Roles"],
     },
     {
       path: "admin/update-role/:roleId",
       element: <RoleUpdatePage />,
       permissions: [Read_All_Permissions],
-      breadcrumbs: ["Home", "Roles", "Permission Manager"],
     },
   ];
 
@@ -59,7 +55,7 @@ const Router = () => {
 
       {/* Protected routes with permission */}
       {routes.map((route, index) => (
-        <Route key={index} element={<ProtectedRoute header={route.header} permissions={route.permissions} breadcrumbs={route.breadcrumbs} />}>
+        <Route key={index} element={<ProtectedRoute header={route.header} permissions={route.permissions} />}>
           <Route path={route.path} element={route.element} />
         </Route>
       ))}

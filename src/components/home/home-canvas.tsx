@@ -18,9 +18,9 @@ const HomeCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<Canvas | null>(null);
 
-  const { data: dbProductionLine } = useProductionLineById(productionLine?.id ?? "");
-  const { mutate: createProductionLine } = useCreateProductionLine();
-  const { mutate: deleteProductionLine, isPending: isDeleteProductionLinePending } = useDeleteProductionLine();
+  const productionLineQuery = useProductionLineById(productionLine?.id ?? "");
+  const createProductionLineMutation = useCreateProductionLine();
+  const deleteProductionLineMutation = useDeleteProductionLine();
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -39,10 +39,10 @@ const HomeCanvas = () => {
 
   // Canvas loading effect - if loading is above it throws an error (but it still works)
   useEffect(() => {
-    if (canvas && dbProductionLine) {
-      canvas.loadFromJSON(dbProductionLine.canvasData).then((x) => x.renderAll());
+    if (canvas && productionLineQuery.data) {
+      canvas.loadFromJSON(productionLineQuery.data.canvasData).then((x) => x.renderAll());
     }
-  }, [canvas, dbProductionLine]);
+  }, [canvas, productionLineQuery.data]);
 
   const addRectangle = () => {
     if (canvas) {
@@ -63,7 +63,7 @@ const HomeCanvas = () => {
       const request: CreateProductionLineRequest = {
         canvasData: canvas.toJSON(),
       };
-      createProductionLine(request, {
+      createProductionLineMutation.mutate(request, {
         onSuccess: () => {
           toast.success("Successfully added new production line.");
         },
@@ -73,7 +73,7 @@ const HomeCanvas = () => {
 
   const dialogDeleteFn = () => {
     if (productionLine) {
-      deleteProductionLine(productionLine.id, {
+      deleteProductionLineMutation.mutate(productionLine.id, {
         onSuccess: () => {
           toast.success("Production line has been successfully deleted!");
           closeDeleteDialog();
@@ -106,7 +106,7 @@ const HomeCanvas = () => {
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete production line."
         deleteFn={dialogDeleteFn}
-        loading={isDeleteProductionLinePending}
+        loading={deleteProductionLineMutation.isPending}
       />
     </>
   );

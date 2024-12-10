@@ -2,19 +2,17 @@ import ErrorAlert from "@/components/common/error-alert";
 import FormSkeleton from "@/components/common/form-skeleton";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import MultipleSelector from "@/components/ui/multiple-selector";
-import { Skeleton } from "@/components/ui/skeleton";
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { useUpdateUser } from "@/hooks/mutations/user-mutations";
 import { useRoles } from "@/hooks/queries/role-queries";
 import { useUserById } from "@/hooks/queries/user-queries";
 import { UpdateUserRequest } from "@/models/user-models";
 import { useUserStore } from "@/stores/user-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Option } from "@/components/ui/multiple-selector";
-import React from "react";
 
 const roleOptionSchema = z.object({
   label: z.string(),
@@ -32,18 +30,17 @@ const UpdateUserForm = () => {
   const userId = useUserStore((state) => state.userId);
   const closeSheet = useUserStore((state) => state.closeSheet);
 
-  const { data: userData } = useUserById(userId);
-  const { isPending: isRolesOptionsPending, isError: isRolesOptionsError, data: roles } = useRoles();
+  const userQuery = useUserById(userId);
+  const rolesQuery = useRoles();
+  const updateUserMutation = useUpdateUser();
 
-  const { mutate: updateUser, isPending: isUpdateUserPending } = useUpdateUser();
-
-  const rolesOptions = React.useMemo(() => {
-    return roles?.map<Option>((role) => ({
+  const rolesOptions = useMemo(() => {
+    return rolesQuery.data?.map<Option>((role) => ({
       label: role.name,
       value: role.id,
       disable: false,
     }));
-  }, [roles]);
+  }, [rolesQuery.data]);
 
   const form = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
@@ -54,24 +51,24 @@ const UpdateUserForm = () => {
 
   const { reset } = form;
 
-  React.useEffect(() => {
-    if (userData) {
+  useEffect(() => {
+    if (userQuery.data) {
       reset({
-        roles: userData.roles.map((role) => ({
+        roles: userQuery.data.roles.map((role) => ({
           value: role.id,
           label: role.name,
           disable: false,
         })),
       });
     }
-  }, [reset, userData]);
+  }, [reset, userQuery.data]);
 
   const onSubmit = (formData: UpdateUserFormData) => {
     const request: UpdateUserRequest = {
       roleIds: formData.roles.map((role) => role.value),
     };
 
-    updateUser(
+    updateUserMutation.mutate(
       { id: userId, data: request },
       {
         onSuccess: () => {
@@ -82,11 +79,11 @@ const UpdateUserForm = () => {
     );
   };
 
-  if (isRolesOptionsPending) {
+  if (rolesQuery.isPending) {
     return <FormSkeleton count={1} />;
   }
 
-  if (isRolesOptionsError) {
+  if (rolesQuery.isError) {
     return (
       <ErrorAlert
         title="Update Action Unavailable"
@@ -105,21 +102,17 @@ const UpdateUserForm = () => {
             <FormItem>
               <FormLabel>Roles</FormLabel>
               <FormControl>
-                {isRolesOptionsPending ? (
-                  <Skeleton className="h-9" />
-                ) : (
-                  <MultipleSelector
-                    {...field}
-                    defaultOptions={rolesOptions}
-                    placeholder="Select roles..."
-                    hidePlaceholderWhenSelected
-                  />
-                )}
+                <MultipleSelector
+                  {...field}
+                  defaultOptions={rolesOptions}
+                  placeholder="Select roles..."
+                  hidePlaceholderWhenSelected
+                />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" loading={isUpdateUserPending}>
+        <Button type="submit" size="sm" loading={updateUserMutation.isPending}>
           Update user
         </Button>
       </form>

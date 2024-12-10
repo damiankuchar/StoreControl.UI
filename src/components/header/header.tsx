@@ -1,7 +1,7 @@
-import ModeToggle from "../mode-toggle/mode-toggle";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import ModeToggle from "../ui/mode-toggle";
 
 const Header = () => {
   return (

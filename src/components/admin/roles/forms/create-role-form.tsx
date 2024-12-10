@@ -23,7 +23,7 @@ type CreateRoleFormData = z.infer<typeof createRoleSchema>;
 const CreateRoleForm = () => {
   const closeCreateDialog = useRoleStore((state) => state.closeCreateDialog);
 
-  const { mutate: createRole, isPending } = useCreateRole();
+  const createRoleMutation = useCreateRole();
 
   const form = useForm({
     resolver: zodResolver(createRoleSchema),
@@ -41,7 +41,7 @@ const CreateRoleForm = () => {
       permissionIds: [],
     };
 
-    createRole(request, {
+    createRoleMutation.mutate(request, {
       onSuccess: () => {
         toast.success("Role has been successfully created!");
         closeCreateDialog();
@@ -86,7 +86,7 @@ const CreateRoleForm = () => {
           <Button variant="outline" onClick={() => closeCreateDialog()}>
             Cancel
           </Button>
-          <Button type="submit" loading={isPending}>
+          <Button type="submit" loading={createRoleMutation.isPending}>
             Create role
           </Button>
         </div>

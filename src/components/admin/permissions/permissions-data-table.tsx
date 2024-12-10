@@ -36,16 +36,15 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
   const [rowSelectionState, setRowSelectionState] = useState<RowSelectionState>({});
 
   const { roleId } = useParams();
-  const { data: role, isError: isGetRoleError } = useRoleById(roleId ?? "");
 
-  const { data: permissions, isError: isGetPermissionsError } = usePermissions();
-
-  const { mutate: updateRole, isPending: isUpdateRolePending } = useUpdateRole();
-  const { mutate: deletePermission, isPending: isDeletePermissionPending } = useDeletePermission();
+  const roleQuery = useRoleById(roleId ?? "");
+  const permissionQuery = usePermissions();
+  const updateRoleMutation = useUpdateRole();
+  const deletePermissionMutation = useDeletePermission();
 
   useEffect(() => {
-    if (role) {
-      const initialSelection = role?.permissions
+    if (roleQuery.data) {
+      const initialSelection = roleQuery.data?.permissions
         .map((permission) => permission.id)
         .reduce((dict, item) => {
           dict[item] = true;
@@ -55,10 +54,10 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
       setInitRowSelectionState(initialSelection);
       setRowSelectionState(initialSelection);
     }
-  }, [role]);
+  }, [roleQuery.data]);
 
   const dialogDeleteFn = () => {
-    deletePermission(permissionId, {
+    deletePermissionMutation.mutate(permissionId, {
       onSuccess: () => {
         toast.success("Permission has been successfully deleted!");
         closeDeleteDialog();
@@ -67,7 +66,7 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
   };
 
   const saveChangesFn = () => {
-    if (!role) {
+    if (!roleQuery.data) {
       toast.error("Can not update role! Role is not defined.");
       return;
     }
@@ -78,8 +77,8 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
       permissionIds: Object.keys(rowSelectionState),
     };
 
-    updateRole(
-      { id: role.id, data: request },
+    updateRoleMutation.mutate(
+      { id: roleQuery.data.id, data: request },
       {
         onSuccess: () => {
           toast.success("Role updated successfully!");
@@ -88,7 +87,7 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
     );
   };
 
-  if (isGetPermissionsError || isGetRoleError) {
+  if (permissionQuery.isError || roleQuery.isError) {
     return (
       <ErrorAlert
         title="Permission Table Unavailable"
@@ -101,13 +100,13 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
     <>
       <DataTable
         columns={columns}
-        data={permissions ?? []}
+        data={permissionQuery.data ?? []}
         pagination={true}
         rowSelectionState={rowSelectionState}
         onRowSelectionChange={setRowSelectionState}
       >
         <PermissionDataTableToolbar
-          isLoading={isUpdateRolePending}
+          isLoading={updateRoleMutation.isPending}
           saveChangesFn={() => saveChangesFn()}
           resetSelectionFn={() => setRowSelectionState(initRowSelectionState)}
         />
@@ -119,7 +118,7 @@ const PermissionsDataTable = ({ roleName, roleDescription }: PermissionsDataTabl
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete permission."
         deleteFn={dialogDeleteFn}
-        loading={isDeletePermissionPending}
+        loading={deletePermissionMutation.isPending}
       />
     </>
   );

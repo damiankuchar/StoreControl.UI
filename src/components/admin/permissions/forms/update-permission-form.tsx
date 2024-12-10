@@ -24,8 +24,8 @@ const UpdatePermissionForm = () => {
   const permissionId = usePermissionStore((state) => state.permissionId);
   const closeSheet = usePermissionStore((state) => state.closeSheet);
 
-  const { data: existingPermission } = usePermissionById(permissionId);
-  const { mutate: updatePermission, isPending: isUpdatePermissionPending } = useUpdatePermission();
+  const permissionQuery = usePermissionById(permissionId);
+  const updatePermissionMutation = useUpdatePermission();
 
   const form = useForm<UpdatePermissionFormData>({
     resolver: zodResolver(updatePermissionSchema),
@@ -38,13 +38,13 @@ const UpdatePermissionForm = () => {
   const { reset } = form;
 
   useEffect(() => {
-    if (existingPermission) {
+    if (permissionQuery.data) {
       reset({
-        name: existingPermission.name,
-        description: existingPermission.description,
+        name: permissionQuery.data.name,
+        description: permissionQuery.data.description,
       });
     }
-  }, [reset, existingPermission]);
+  }, [reset, permissionQuery.data]);
 
   const onSubmit = (formData: UpdatePermissionFormData) => {
     const request: UpdatePermissionRequest = {
@@ -52,7 +52,7 @@ const UpdatePermissionForm = () => {
       description: formData.description,
     };
 
-    updatePermission(
+    updatePermissionMutation.mutate(
       { id: permissionId, data: request },
       {
         onSuccess: () => {
@@ -92,7 +92,7 @@ const UpdatePermissionForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" loading={isUpdatePermissionPending}>
+        <Button type="submit" size="sm" loading={updatePermissionMutation.isPending}>
           Update permission
         </Button>
       </form>

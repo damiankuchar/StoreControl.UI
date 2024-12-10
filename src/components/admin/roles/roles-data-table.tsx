@@ -18,12 +18,12 @@ const RolesDataTable = () => {
   const closeCreateDialog = useRoleStore((state) => state.closeCreateDialog);
   const closeDeleteDialog = useRoleStore((state) => state.closeDeleteDialog);
 
-  const { mutate: deleteRole, isPending } = useDeleteRole();
+  const deleteRoleMutation = useDeleteRole();
 
-  const { data } = useRoles();
+  const rolesQuery = useRoles();
 
   const dialogDeleteFn = () => {
-    deleteRole(roleId, {
+    deleteRoleMutation.mutate(roleId, {
       onSuccess: () => {
         toast.success("Role has been successfully deleted!");
         closeDeleteDialog();
@@ -33,7 +33,7 @@ const RolesDataTable = () => {
 
   return (
     <>
-      <DataTable data={data ?? fallbackData} columns={columns}>
+      <DataTable data={rolesQuery.data ?? fallbackData} columns={columns}>
         <RolesDataTableToolbar />
       </DataTable>
       <CreateRoleDialog open={isCreateDialogOpen} onOpenChange={closeCreateDialog} />
@@ -43,7 +43,7 @@ const RolesDataTable = () => {
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete user."
         deleteFn={dialogDeleteFn}
-        loading={isPending}
+        loading={deleteRoleMutation.isPending}
       />
     </>
   );

@@ -21,7 +21,7 @@ type CreatePermissionFormData = z.infer<typeof createPermissionSchema>;
 const CreatePermissionForm = () => {
   const closeSheet = usePermissionStore((state) => state.closeSheet);
 
-  const { mutate: createPermission, isPending: isCreatePermissionPending } = useCreatePermission();
+  const createPermissionMutation = useCreatePermission();
 
   const form = useForm<CreatePermissionFormData>({
     resolver: zodResolver(createPermissionSchema),
@@ -37,7 +37,7 @@ const CreatePermissionForm = () => {
       description: formData.description,
     };
 
-    createPermission(request, {
+    createPermissionMutation.mutate(request, {
       onSuccess: () => {
         toast.success("Permission has been successfully created!");
         closeSheet();
@@ -74,7 +74,7 @@ const CreatePermissionForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" loading={isCreatePermissionPending}>
+        <Button type="submit" size="sm" loading={createPermissionMutation.isPending}>
           Create permission
         </Button>
       </form>
