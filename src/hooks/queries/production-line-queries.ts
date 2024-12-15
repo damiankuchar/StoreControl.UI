@@ -12,6 +12,5 @@ export const useProductionLineById = (id: string) => {
   return useQuery({
     queryKey: ["production-line", id],
     queryFn: () => getProductionLineById(id),
-    enabled: !!id,
   });
 };

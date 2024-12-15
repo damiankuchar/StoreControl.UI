@@ -18,7 +18,7 @@ const CanvasHeader = () => {
           </Button>
         </div>
         <div className="flex-1 flex justify-center lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
-          <h1 className="text-3xl leading-none whitespace-nowrap">{selectedProductionLine?.id}</h1>
+          <h1 className="text-3xl leading-none whitespace-nowrap">{selectedProductionLine?.name}</h1>
         </div>
         <div className="flex gap-2 items-center justify-end lg:flex-1">
           <CommandMenu />

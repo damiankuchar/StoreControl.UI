@@ -1,5 +1,5 @@
-import { CreateProductionLineRequest } from "@/models/production-line-models";
-import { createProductionLine, deleteProductionLine } from "@/services/production-line-services";
+import { CreateProductionLineRequest, UpdateProductionLineRequest } from "@/models/production-line-models";
+import { createProductionLine, deleteProductionLine, updateProductionLine } from "@/services/production-line-services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateProductionLine = () => {
@@ -8,6 +8,19 @@ export const useCreateProductionLine = () => {
   return useMutation({
     mutationFn: (data: CreateProductionLineRequest) => createProductionLine(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["production-lines"] });
+    },
+  });
+};
+
+export const useUpdateProductionLine = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (variables: { id: string; data: UpdateProductionLineRequest }) =>
+      updateProductionLine(variables.id, variables.data),
+    onSuccess: ({ id }) => {
+      queryClient.invalidateQueries({ queryKey: ["production-line", id] });
       queryClient.invalidateQueries({ queryKey: ["production-lines"] });
     },
   });

@@ -1,15 +1,17 @@
 import { useProductionLines } from "@/hooks/queries/production-line-queries";
 import { ProductionLineDto } from "@/models/production-line-models";
+import { useCanvasStore } from "@/stores/canvas-store";
+import { CircleCheckBig } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { useCanvasStore } from "@/stores/canvas-store";
 
 const CommandMenu = () => {
+  const selectedProductionLine = useCanvasStore((state) => state.selectedProductionLine);
   const setSelectedProductionLine = useCanvasStore((state) => state.setSelectedProductionLine);
   const [open, setOpen] = useState(false);
 
-  const { data: productionLines } = useProductionLines();
+  const productionLinesQuery = useProductionLines();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -23,15 +25,20 @@ const CommandMenu = () => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  useEffect(() => {
-    if (productionLines) {
-      setSelectedProductionLine(productionLines[0]);
-    }
-  }, [productionLines, setSelectedProductionLine]);
-
   const runCommand = (productionLine: ProductionLineDto) => {
     setOpen(false);
     setSelectedProductionLine(productionLine);
+  };
+
+  const renderCommandItem = (productionLine: ProductionLineDto) => {
+    const isSelected = selectedProductionLine?.id === productionLine.id;
+
+    return (
+      <CommandItem key={productionLine.id} onSelect={() => runCommand(productionLine)}>
+        {isSelected ? <CircleCheckBig className="text-success" /> : null}
+        <span>{productionLine.name}</span>
+      </CommandItem>
+    );
   };
 
   return (
@@ -52,11 +59,8 @@ const CommandMenu = () => {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Production Lines">
-            {productionLines?.map((productionLine, index) => (
-              <CommandItem key={index} onSelect={() => runCommand(productionLine)}>
-                <span>{productionLine.id}</span>
-              </CommandItem>
-            ))}
+            <CommandItem value="-" className="hidden" />
+            {productionLinesQuery.data?.map((productionLine) => renderCommandItem(productionLine))}
           </CommandGroup>
         </CommandList>
       </CommandDialog>
